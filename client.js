@@ -3188,6 +3188,7 @@ html[data-fairy-skin-legacy] [class*="_scrollBody"] {
       orbHero: true,
       orbChat: true,
       orbHeader: true,
+      band: false,
       rev: 1,
     }
 
@@ -3196,7 +3197,7 @@ html[data-fairy-skin-legacy] [class*="_scrollBody"] {
       ? {
           nav: 'HDD',
           title: '对话区背景',
-          intro: '背景图、遮罩、三颗全息核心。改动立即生效，不用重启。',
+          intro: '背景图、遮罩、三颗全息核心、输入区外框。改动立即生效，不用重启。',
           source: '背景来源',
           sDefault: '跟随皮肤',
           sFile: '本地文件',
@@ -3213,6 +3214,9 @@ html[data-fairy-skin-legacy] [class*="_scrollBody"] {
           orbHero: '新会话页（屏幕正中）',
           orbChat: '对话区（顶部小眼睛）',
           orbHeader: '标题栏',
+          composer: '输入区',
+          band: '灰底外框',
+          bandHint: '输入框外面那圈灰底与圆角外框。关掉后只剩输入卡，四周留白保留。',
           persona: '人格（AGENT.md）',
           personaHint: '直接编辑全局人格文件，保存后写入 ~/.dsh/AGENT.md；上一版会留成 .bak-hdd。',
           save: '保存',
@@ -3228,7 +3232,7 @@ html[data-fairy-skin-legacy] [class*="_scrollBody"] {
       : {
           nav: 'HDD',
           title: 'Conversation backdrop',
-          intro: 'Backdrop, scrim and the three holographic cores. Changes apply immediately.',
+          intro: 'Backdrop, scrim, the three holographic cores and the composer band. Changes apply immediately.',
           source: 'Backdrop source',
           sDefault: 'Follow skin',
           sFile: 'Local file',
@@ -3245,6 +3249,9 @@ html[data-fairy-skin-legacy] [class*="_scrollBody"] {
           orbHero: 'New-session page (screen centre)',
           orbChat: 'Conversation area (top eye)',
           orbHeader: 'Title bar',
+          composer: 'Composer',
+          band: 'Grey band',
+          bandHint: 'The grey slab and rounded frame around the input capsule. Off leaves the capsule floating, gaps kept.',
           persona: 'Persona (AGENT.md)',
           personaHint: 'Edits the global persona file; saving writes ~/.dsh/AGENT.md and keeps the previous version as .bak-hdd.',
           save: 'Save',
@@ -3258,7 +3265,11 @@ html[data-fairy-skin-legacy] [class*="_scrollBody"] {
           badUrl: 'URL must start with http:// or https://',
         }
 
-    /* 输入区：灰底带圆角与间隔（原 dsh-fairy-composer 的全部内容） */
+    /* 输入区：灰底带圆角与间隔（原 dsh-fairy-composer 的全部内容）。
+       外框可以关：关掉只把灰底去掉，四周留白保留，输入卡直接浮在背景上。
+       两条覆盖规则带 data-fairy-skin + data-hdd-band 双属性，特异度高于皮肤
+       自己的 `.an3WzG_composerSeat` / `[class*="_composerSeat"]` 规则，不靠
+       注入顺序取胜。 */
     const COMPOSER_CSS = `
 :root {
   --dsh-composer-gap-x: 12px;
@@ -3274,6 +3285,15 @@ html[data-fairy-skin-legacy] [class*="_scrollBody"] {
     var(--dsh-composer-gap-bottom);
   border-radius: var(--dsh-composer-frame-radius);
   background: var(--dsw-alias-bg-base);
+}
+
+html[data-fairy-skin][data-hdd-band="off"] :is([class*="_composerSeat"], [class*="_composerStack"]) {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+html[data-fairy-skin][data-hdd-band="off"] .an3WzG_composerSeat {
+  background: transparent !important;
 }
 `
 
@@ -3292,6 +3312,7 @@ html[data-fairy-skin-legacy] [class*="_scrollBody"] {
           orbHero: parsed.orbHero !== false,
           orbChat: parsed.orbChat !== false,
           orbHeader: parsed.orbHeader !== false,
+          band: parsed.band === true,
           rev: Number.isFinite(parsed.rev) ? parsed.rev : 1,
         }
       }
@@ -3375,6 +3396,7 @@ html[data-fairy-skin-legacy] [class*="_scrollBody"] {
       if (!state.orbChat) hidden.push('chat')
       if (!state.orbHeader) hidden.push('header')
       root.setAttribute('data-hdd-orb', hidden.join(' '))
+      root.setAttribute('data-hdd-band', state.band ? 'on' : 'off')
     }
 
     const rowStyle = {
@@ -3622,6 +3644,11 @@ html[data-fairy-skin-legacy] [class*="_scrollBody"] {
         toggleRow(L.orbChat, null, 'orbChat'),
         toggleRow(L.orbHeader, null, 'orbHeader'),
 
+        h('div', { style: { ...rowStyle, borderBottom: 'none', paddingBottom: '0' } },
+          h('div', { style: { flex: '1 1 auto' } }, h('div', { style: labelStyle }, L.composer)),
+        ),
+        toggleRow(L.band, L.bandHint, 'band'),
+
         h('div', { style: { display: 'flex', alignItems: 'center', gap: '12px', paddingTop: '14px', flexWrap: 'wrap' } },
           h('button', { type: 'button', onClick: reset, style: buttonStyle }, L.reset),
           notice ? h('span', { style: { fontSize: '12px', opacity: .7 } }, notice) : null,
@@ -3713,6 +3740,7 @@ html[data-fairy-skin-legacy] [class*="_scrollBody"] {
             const root = document.documentElement
             root.removeAttribute('data-hdd')
             root.removeAttribute('data-hdd-orb')
+            root.removeAttribute('data-hdd-band')
           }
         }, 'hdd: backdrop, scrim and core visibility')
 
