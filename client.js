@@ -3189,6 +3189,7 @@ html[data-fairy-skin-legacy] [class*="_scrollBody"] {
       orbChat: true,
       orbHeader: true,
       band: false,
+      acrylic: false,
       rev: 1,
     }
 
@@ -3217,6 +3218,8 @@ html[data-fairy-skin-legacy] [class*="_scrollBody"] {
           composer: '输入区',
           band: '灰底外框',
           bandHint: '输入框外面那圈灰底与圆角外框。关掉后只剩输入卡，四周留白保留。',
+          acrylic: '白色亚克力',
+          acrylicHint: '输入卡换成磨砂白玻璃，文字自动反成深色；磨砂是背景模糊，只作用这一颗胶囊。',
           persona: '人格（AGENT.md）',
           personaHint: '直接编辑全局人格文件，保存后写入 ~/.dsh/AGENT.md；上一版会留成 .bak-hdd。',
           save: '保存',
@@ -3252,6 +3255,8 @@ html[data-fairy-skin-legacy] [class*="_scrollBody"] {
           composer: 'Composer',
           band: 'Grey band',
           bandHint: 'The grey slab and rounded frame around the input capsule. Off leaves the capsule floating, gaps kept.',
+          acrylic: 'White acrylic',
+          acrylicHint: 'Frosted white capsule with dark text. The frost is a backdrop blur, scoped to this one capsule.',
           persona: 'Persona (AGENT.md)',
           personaHint: 'Edits the global persona file; saving writes ~/.dsh/AGENT.md and keeps the previous version as .bak-hdd.',
           save: 'Save',
@@ -3295,6 +3300,40 @@ html[data-fairy-skin][data-hdd-band="off"] :is([class*="_composerSeat"], [class*
 html[data-fairy-skin][data-hdd-band="off"] .an3WzG_composerSeat {
   background: transparent !important;
 }
+
+/*
+ * 白色亚克力输入卡。两块要一起换：底色换成半透明白，文字必须反成深色，
+ * 否则白底浅字看不见。磨砂靠 backdrop-filter，作用面只有这一颗胶囊，
+ * 不像皮肤当初禁用整层模糊那样吃性能。
+ */
+html[data-fairy-skin][data-hdd-acrylic="on"] :is(.GRgSLq_card, .RlGAzG_card) {
+  background: linear-gradient(180deg, rgba(255, 255, 255, .90) 0%, rgba(243, 247, 255, .84) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, .74) !important;
+  border-top-color: rgba(255, 255, 255, .96) !important;
+  backdrop-filter: blur(18px) saturate(1.12) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(1.12) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .92),
+    0 18px 44px rgba(3, 8, 22, .40),
+    0 2px 10px rgba(3, 8, 22, .24) !important;
+  color: #16233d !important;
+  text-shadow: none !important;
+}
+html[data-fairy-skin][data-hdd-acrylic="on"] :is(.GRgSLq_card, .RlGAzG_card) :is(textarea, input) {
+  color: #16233d !important;
+  caret-color: #2456c4 !important;
+  text-shadow: none !important;
+}
+html[data-fairy-skin][data-hdd-acrylic="on"] :is(.GRgSLq_card, .RlGAzG_card) :is(textarea, input)::placeholder {
+  color: rgba(22, 35, 61, .44) !important;
+}
+html[data-fairy-skin][data-hdd-acrylic="on"] :is(.GRgSLq_card, .RlGAzG_card) :is(button, span, small) {
+  color: #24395f !important;
+  text-shadow: none !important;
+}
+html[data-fairy-skin][data-hdd-acrylic="on"] :is(.GRgSLq_card, .RlGAzG_card) svg {
+  color: #24395f !important;
+}
 `
 
     function readState() {
@@ -3313,6 +3352,7 @@ html[data-fairy-skin][data-hdd-band="off"] .an3WzG_composerSeat {
           orbChat: parsed.orbChat !== false,
           orbHeader: parsed.orbHeader !== false,
           band: parsed.band === true,
+          acrylic: parsed.acrylic === true,
           rev: Number.isFinite(parsed.rev) ? parsed.rev : 1,
         }
       }
@@ -3397,6 +3437,7 @@ html[data-fairy-skin][data-hdd-band="off"] .an3WzG_composerSeat {
       if (!state.orbHeader) hidden.push('header')
       root.setAttribute('data-hdd-orb', hidden.join(' '))
       root.setAttribute('data-hdd-band', state.band ? 'on' : 'off')
+      root.setAttribute('data-hdd-acrylic', state.acrylic ? 'on' : 'off')
     }
 
     const rowStyle = {
@@ -3648,6 +3689,7 @@ html[data-fairy-skin][data-hdd-band="off"] .an3WzG_composerSeat {
           h('div', { style: { flex: '1 1 auto' } }, h('div', { style: labelStyle }, L.composer)),
         ),
         toggleRow(L.band, L.bandHint, 'band'),
+        toggleRow(L.acrylic, L.acrylicHint, 'acrylic'),
 
         h('div', { style: { display: 'flex', alignItems: 'center', gap: '12px', paddingTop: '14px', flexWrap: 'wrap' } },
           h('button', { type: 'button', onClick: reset, style: buttonStyle }, L.reset),
@@ -3741,6 +3783,7 @@ html[data-fairy-skin][data-hdd-band="off"] .an3WzG_composerSeat {
             root.removeAttribute('data-hdd')
             root.removeAttribute('data-hdd-orb')
             root.removeAttribute('data-hdd-band')
+            root.removeAttribute('data-hdd-acrylic')
           }
         }, 'hdd: backdrop, scrim and core visibility')
 
