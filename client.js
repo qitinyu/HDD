@@ -3189,7 +3189,7 @@ html[data-fairy-skin-legacy] [class*="_scrollBody"] {
       orbChat: true,
       orbHeader: true,
       band: false,
-      acrylic: false,
+      capsule: 'blue',
       rev: 1,
     }
 
@@ -3218,8 +3218,10 @@ html[data-fairy-skin-legacy] [class*="_scrollBody"] {
           composer: '输入区',
           band: '灰底外框',
           bandHint: '输入框外面那圈灰底与圆角外框。关掉后只剩输入卡，四周留白保留。',
-          acrylic: '白色亚克力',
-          acrylicHint: '输入卡换成磨砂白玻璃，文字自动反成深色；磨砂是背景模糊，只作用这一颗胶囊。',
+          capsule: '输入框背景',
+          capsuleBlue: '蓝色亚克力',
+          capsuleWhite: '白色亚克力',
+          capsuleHint: '蓝色是皮肤原本的蓝玻璃（卡片尺寸与投影已收窄）；白色是磨砂白玻璃，文字自动反成深色。切换即时生效。',
           persona: '人格（AGENT.md）',
           personaHint: '直接编辑全局人格文件，保存后写入 ~/.dsh/AGENT.md；上一版会留成 .bak-hdd。',
           save: '保存',
@@ -3255,8 +3257,10 @@ html[data-fairy-skin-legacy] [class*="_scrollBody"] {
           composer: 'Composer',
           band: 'Grey band',
           bandHint: 'The grey slab and rounded frame around the input capsule. Off leaves the capsule floating, gaps kept.',
-          acrylic: 'White acrylic',
-          acrylicHint: 'Frosted white capsule with dark text. The frost is a backdrop blur, scoped to this one capsule.',
+          capsule: 'Input background',
+          capsuleBlue: 'Blue acrylic',
+          capsuleWhite: 'White acrylic',
+          capsuleHint: 'Blue is the skin’s own glass, now card-sized with a lighter shadow; white is frosted with dark text. Switching applies immediately.',
           persona: 'Persona (AGENT.md)',
           personaHint: 'Edits the global persona file; saving writes ~/.dsh/AGENT.md and keeps the previous version as .bak-hdd.',
           save: 'Save',
@@ -3306,7 +3310,7 @@ html[data-fairy-skin][data-hdd-band="off"] .an3WzG_composerSeat {
  * 否则白底浅字看不见。磨砂靠 backdrop-filter，作用面只有这一颗胶囊，
  * 不像皮肤当初禁用整层模糊那样吃性能。
  */
-html[data-fairy-skin][data-hdd-acrylic="on"] :is(.GRgSLq_card, .RlGAzG_card) {
+html[data-fairy-skin][data-hdd-capsule="white"] :is(.GRgSLq_card, .RlGAzG_card) {
   background: linear-gradient(180deg, rgba(255, 255, 255, .90) 0%, rgba(243, 247, 255, .84) 100%) !important;
   border: 1px solid rgba(255, 255, 255, .74) !important;
   border-top-color: rgba(255, 255, 255, .96) !important;
@@ -3319,19 +3323,19 @@ html[data-fairy-skin][data-hdd-acrylic="on"] :is(.GRgSLq_card, .RlGAzG_card) {
   color: #16233d !important;
   text-shadow: none !important;
 }
-html[data-fairy-skin][data-hdd-acrylic="on"] :is(.GRgSLq_card, .RlGAzG_card) :is(textarea, input) {
+html[data-fairy-skin][data-hdd-capsule="white"] :is(.GRgSLq_card, .RlGAzG_card) :is(textarea, input) {
   color: #16233d !important;
   caret-color: #2456c4 !important;
   text-shadow: none !important;
 }
-html[data-fairy-skin][data-hdd-acrylic="on"] :is(.GRgSLq_card, .RlGAzG_card) :is(textarea, input)::placeholder {
+html[data-fairy-skin][data-hdd-capsule="white"] :is(.GRgSLq_card, .RlGAzG_card) :is(textarea, input)::placeholder {
   color: rgba(22, 35, 61, .44) !important;
 }
-html[data-fairy-skin][data-hdd-acrylic="on"] :is(.GRgSLq_card, .RlGAzG_card) :is(button, span, small) {
+html[data-fairy-skin][data-hdd-capsule="white"] :is(.GRgSLq_card, .RlGAzG_card) :is(button, span, small) {
   color: #24395f !important;
   text-shadow: none !important;
 }
-html[data-fairy-skin][data-hdd-acrylic="on"] :is(.GRgSLq_card, .RlGAzG_card) svg {
+html[data-fairy-skin][data-hdd-capsule="white"] :is(.GRgSLq_card, .RlGAzG_card) svg {
   color: #24395f !important;
 }
 
@@ -3340,24 +3344,47 @@ html[data-fairy-skin][data-hdd-acrylic="on"] :is(.GRgSLq_card, .RlGAzG_card) svg
  * "+" 与发送按钮、计数条），白底之后就成了白字白底。这批选择器比上面的卡级
  * 规则更具体，所以逐条点名，不做全局通配。
  */
-html[data-fairy-skin][data-hdd-acrylic="on"] :is(.GRgSLq_input, .RlGAzG_input) {
+html[data-fairy-skin][data-hdd-capsule="white"] :is(.GRgSLq_input, .RlGAzG_input) {
   color: #1a2743 !important;
   caret-color: #2456c4 !important;
   text-shadow: none !important;
 }
-html[data-fairy-skin][data-hdd-acrylic="on"] :is(.GRgSLq_placeholder, .RlGAzG_placeholder) {
+html[data-fairy-skin][data-hdd-capsule="white"] :is(.GRgSLq_placeholder, .RlGAzG_placeholder) {
   color: rgba(26, 39, 67, .46) !important;
 }
-html[data-fairy-skin][data-hdd-acrylic="on"] :is(.GRgSLq_add, .GRgSLq_primary, .RlGAzG_add) {
+html[data-fairy-skin][data-hdd-capsule="white"] :is(.GRgSLq_add, .GRgSLq_primary, .RlGAzG_add) {
   color: #22304d !important;
 }
-html[data-fairy-skin][data-hdd-acrylic="on"] ._2WTFBq_bar {
+html[data-fairy-skin][data-hdd-capsule="white"] ._2WTFBq_bar {
   background: rgba(34, 48, 77, .08) !important;
   color: #3a4a6d !important;
 }
-html[data-fairy-skin][data-hdd-acrylic="on"] ._2WTFBq_bar :is(span, div, p) {
+html[data-fairy-skin][data-hdd-capsule="white"] ._2WTFBq_bar :is(span, div, p) {
   color: #3a4a6d !important;
 }
+/*
+ * 蓝色亚克力：颜色仍是皮肤原本的蓝玻璃（渐变 + 颗粒 + 液体层），这里只改
+ * 尺寸与投影 —— 把胶囊从「撑满整行」收成一颗居中卡片，和白色那版同宽同高，
+ * 切换时布局不跳。投影取中性值：滚到底时压在浅色内容上也不会糊成一块黑。
+ */
+html[data-fairy-skin][data-hdd-capsule="blue"] .an3WzG_composerSeat,
+html[data-fairy-skin][data-hdd-capsule="blue"] [class*="_composerSeat"] {
+  padding-left: 12px !important;
+  padding-right: 12px !important;
+}
+html[data-fairy-skin][data-hdd-capsule="blue"] :is(.GRgSLq_card, .RlGAzG_card) {
+  width: min(100%, var(--hdd-capsule-max, 760px)) !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  border-radius: 22px !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .16),
+    inset 0 -16px 28px -24px rgba(0, 0, 0, .42),
+    0 12px 28px rgba(3, 8, 22, .34),
+    0 2px 8px rgba(3, 8, 22, .20),
+    0 0 26px rgba(92, 132, 255, .10) !important;
+}
+
 `
 
     function readState() {
@@ -3376,7 +3403,7 @@ html[data-fairy-skin][data-hdd-acrylic="on"] ._2WTFBq_bar :is(span, div, p) {
           orbChat: parsed.orbChat !== false,
           orbHeader: parsed.orbHeader !== false,
           band: parsed.band === true,
-          acrylic: parsed.acrylic === true,
+          capsule: parsed.capsule === 'white' ? 'white' : ('blue' === parsed.capsule ? 'blue' : (parsed.acrylic === true ? 'white' : 'blue')),
           rev: Number.isFinite(parsed.rev) ? parsed.rev : 1,
         }
       }
@@ -3461,7 +3488,7 @@ html[data-fairy-skin][data-hdd-acrylic="on"] ._2WTFBq_bar :is(span, div, p) {
       if (!state.orbHeader) hidden.push('header')
       root.setAttribute('data-hdd-orb', hidden.join(' '))
       root.setAttribute('data-hdd-band', state.band ? 'on' : 'off')
-      root.setAttribute('data-hdd-acrylic', state.acrylic ? 'on' : 'off')
+      root.setAttribute('data-hdd-capsule', state.capsule === 'white' ? 'white' : 'blue')
     }
 
     const rowStyle = {
@@ -3628,8 +3655,14 @@ html[data-fairy-skin][data-hdd-acrylic="on"] ._2WTFBq_bar :is(span, div, p) {
         h(Toggle, { on: state[key], label, onChange: () => commit({ [key]: !readState()[key] }) }),
       )
 
-      const resolved = artValue(state)
+      const capsuleButton = (value, label) => h('button', {
+        type: 'button',
+        onClick: () => commit({ capsule: value }),
+        'aria-pressed': state.capsule === value,
+        style: state.capsule === value ? buttonOnStyle : buttonStyle,
+      }, label)
 
+      const resolved = artValue(state)
       return h('div', { style: { padding: '4px 0 24px', maxWidth: '720px' } },
         h('div', { style: { fontSize: '16px', fontWeight: 600, marginBottom: '4px' } }, 'HDD'),
         h('div', { style: hintStyle }, L.intro),
@@ -3713,7 +3746,17 @@ html[data-fairy-skin][data-hdd-acrylic="on"] ._2WTFBq_bar :is(span, div, p) {
           h('div', { style: { flex: '1 1 auto' } }, h('div', { style: labelStyle }, L.composer)),
         ),
         toggleRow(L.band, L.bandHint, 'band'),
-        toggleRow(L.acrylic, L.acrylicHint, 'acrylic'),
+
+        h('div', { style: rowStyle },
+          h('div', { style: { flex: '1 1 auto' } },
+            h('div', { style: labelStyle }, L.capsule),
+            h('div', { style: hintStyle }, L.capsuleHint),
+          ),
+          h('div', { style: { display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'flex-end' } },
+            capsuleButton('blue', L.capsuleBlue),
+            capsuleButton('white', L.capsuleWhite),
+          ),
+        ),
 
         h('div', { style: { display: 'flex', alignItems: 'center', gap: '12px', paddingTop: '14px', flexWrap: 'wrap' } },
           h('button', { type: 'button', onClick: reset, style: buttonStyle }, L.reset),
@@ -3807,7 +3850,7 @@ html[data-fairy-skin][data-hdd-acrylic="on"] ._2WTFBq_bar :is(span, div, p) {
             root.removeAttribute('data-hdd')
             root.removeAttribute('data-hdd-orb')
             root.removeAttribute('data-hdd-band')
-            root.removeAttribute('data-hdd-acrylic')
+            root.removeAttribute('data-hdd-capsule')
           }
         }, 'hdd: backdrop, scrim and core visibility')
 

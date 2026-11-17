@@ -1,6 +1,6 @@
 {
   "name": "dsh-hdd",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "type": "module",
   "description": "HDD：DeepSeek Harness 的 Fairy 皮肤与管家面板 —— H.D.D. 开机影片、全息核心、对话区背景、输入区圆角、AGENT.md 人格编辑，全在一个面板里。二次开发自 dsh-fairy-pack。",
   "exports": {

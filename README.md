@@ -2,7 +2,7 @@
 
 DeepSeek Harness 的 Fairy 皮肤与管家面板：**H.D.D. 开机影片、全息核心、玻璃侧边栏、输入区圆角、对话区背景、遮罩浓度、AGENT.md 人格编辑** —— 全部收在一个面板里，入口是 **设置 → HDD**。
 
-仓库：<https://github.com/qitinyu/HDD> ｜ 版本：1.0.2 ｜ 许可：MIT（代码）
+仓库：<https://github.com/qitinyu/HDD> ｜ 版本：1.0.3 ｜ 许可：MIT（代码）
 
 ## 来源与二次开发声明
 
@@ -12,7 +12,7 @@ DeepSeek Harness 的 Fairy 皮肤与管家面板：**H.D.D. 开机影片、全�
 
 | 上游包 | 版本 | 作用 | 在本仓库中的去向 |
 | --- | --- | --- | --- |
-| `dsh-fairy-splash` | 1.0.24 | 皮肤主体：开机影片、全息核心、玻璃侧栏 | **并入**：逻辑内联进 `client.js`，素材改由本插件 `/hdd/v1/*` 提供 |
+| `dsh-fairy-splash` | 1.0.34 | 皮肤主体：开机影片、全息核心、玻璃侧栏 | **并入**：逻辑内联进 `client.js`，素材改由本插件 `/hdd/v1/*` 提供 |
 | `dsh-fairy-composer` | 1.0.1 | 输入区圆角 | **并入**：静态 CSS 并入 `client.js` |
 | `dsh-agent-md` | 0.2.0 | 全局/项目人格文件与编辑界面 | **重写**：宿主侧改为 `ctx.systemPrompt.context()` 现读现注入，编辑界面并入 HDD 面板 |
 | `dsh-fairy-voice` | 1.0.11 | GPT-SoVITS 语音播报 | **未采用**：依赖本地 TTS 运行时，本仓库不含 |
@@ -49,7 +49,7 @@ plugin_manager  action=install_bundle  target=<本仓库绝对路径>
 npm publish --access public
 ```
 
-然后按包名装：`plugin_manager action=install_bundle target=dsh-hdd@1.0.2`。
+然后按包名装：`plugin_manager action=install_bundle target=dsh-hdd@1.0.3`。
 
 发布前必须处理两件事，否则是侵权分发：
 
