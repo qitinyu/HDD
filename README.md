@@ -2,7 +2,7 @@
 
 DeepSeek Harness 的 Fairy 皮肤与管家面板：**H.D.D. 开机影片、全息核心、玻璃侧边栏、输入区圆角、对话区背景、遮罩浓度、AGENT.md 人格编辑** —— 全部收在一个面板里，入口是 **设置 → HDD**。
 
-仓库：<https://github.com/qitinyu/HDD> ｜ 版本：2.1.0 ｜ 许可：MIT（代码）
+仓库：<https://github.com/qitinyu/HDD> ｜ 版本：1.0.2 ｜ 许可：MIT（代码）
 
 ## 来源与二次开发声明
 
@@ -49,7 +49,7 @@ plugin_manager  action=install_bundle  target=<本仓库绝对路径>
 npm publish --access public
 ```
 
-然后按包名装：`plugin_manager action=install_bundle target=dsh-hdd@2.1.0`。
+然后按包名装：`plugin_manager action=install_bundle target=dsh-hdd@1.0.2`。
 
 发布前必须处理两件事，否则是侵权分发：
 

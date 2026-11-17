@@ -3334,6 +3334,30 @@ html[data-fairy-skin][data-hdd-acrylic="on"] :is(.GRgSLq_card, .RlGAzG_card) :is
 html[data-fairy-skin][data-hdd-acrylic="on"] :is(.GRgSLq_card, .RlGAzG_card) svg {
   color: #24395f !important;
 }
+
+/*
+ * 反色补漏：皮肤里还有一批浅色规则直接压在胶囊内部的元素上（输入区、占位符、
+ * "+" 与发送按钮、计数条），白底之后就成了白字白底。这批选择器比上面的卡级
+ * 规则更具体，所以逐条点名，不做全局通配。
+ */
+html[data-fairy-skin][data-hdd-acrylic="on"] :is(.GRgSLq_input, .RlGAzG_input) {
+  color: #1a2743 !important;
+  caret-color: #2456c4 !important;
+  text-shadow: none !important;
+}
+html[data-fairy-skin][data-hdd-acrylic="on"] :is(.GRgSLq_placeholder, .RlGAzG_placeholder) {
+  color: rgba(26, 39, 67, .46) !important;
+}
+html[data-fairy-skin][data-hdd-acrylic="on"] :is(.GRgSLq_add, .GRgSLq_primary, .RlGAzG_add) {
+  color: #22304d !important;
+}
+html[data-fairy-skin][data-hdd-acrylic="on"] ._2WTFBq_bar {
+  background: rgba(34, 48, 77, .08) !important;
+  color: #3a4a6d !important;
+}
+html[data-fairy-skin][data-hdd-acrylic="on"] ._2WTFBq_bar :is(span, div, p) {
+  color: #3a4a6d !important;
+}
 `
 
     function readState() {
