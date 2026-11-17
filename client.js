@@ -3306,6 +3306,18 @@ html[data-fairy-skin][data-hdd-band="off"] .an3WzG_composerSeat {
 }
 
 /*
+ * 滚到底时输入区周围冒出一块纯色深底（实测颜色 26,30,42，等于
+ * --dsw-alias-bg-base），横跨整个对话区宽度，输入卡浮在上面。它不是投影，
+ * 是某一层容器把自己的 background-color 刷了上去，而那层的类名没有公开
+ * 稳定后缀。所以不猜类名：用 :has() 命中「任何包含输入区座位的祖先」，
+ * 只清 background-color，不碰 background-image —— 艺术图挂在更上层的
+ * root 上（走 background-image），清掉颜色不动它。
+ */
+html[data-fairy-skin][data-hdd-band="off"] :is(.V4vHZW_root, [data-slot="main.conversation"]) *:has([class*="_composerSeat"]) {
+  background-color: transparent !important;
+}
+
+/*
  * 白色亚克力输入卡。两块要一起换：底色换成半透明白，文字必须反成深色，
  * 否则白底浅字看不见。磨砂靠 backdrop-filter，作用面只有这一颗胶囊，
  * 不像皮肤当初禁用整层模糊那样吃性能。
