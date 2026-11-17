@@ -1,0 +1,72 @@
+{
+  "name": "dsh-hdd",
+  "version": "2.1.0",
+  "type": "module",
+  "description": "HDD：DeepSeek Harness 的 Fairy 皮肤与管家面板 —— H.D.D. 开机影片、全息核心、对话区背景、输入区圆角、AGENT.md 人格编辑，全在一个面板里。二次开发自 dsh-fairy-pack。",
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.js",
+    "client.js",
+    "cordis.patch.yml",
+    "locale/*.json",
+    "assets/*",
+    "scripts/check-assets.mjs",
+    "icon.svg",
+    "NOTICE.md",
+    "CHANGELOG.md",
+    "README.md"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": [
+        "@deepseek-ai/dsh-client-locale",
+        "@deepseek-ai/dsh-client-ui-slots",
+        "@deepseek-ai/dsh-client-ui-renderer",
+        "@deepseek-ai/dsh-client-ui-layout",
+        "@deepseek-ai/dsh-client-ui-sidebar",
+        "@deepseek-ai/dsh-client-ui-settings"
+      ]
+    }
+  },
+  "icon": "./icon.svg",
+  "license": "MIT",
+  "author": "YuQi",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qitinyu/HDD.git"
+  },
+  "homepage": "https://github.com/qitinyu/HDD#readme",
+  "bugs": {
+    "url": "https://github.com/qitinyu/HDD/issues"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "check": "node --check index.js && node --check client.js && node --check scripts/check-assets.mjs",
+    "check:assets": "node scripts/check-assets.mjs",
+    "pack:list": "npm pack --dry-run"
+  },
+  "keywords": [
+    "dsh-plugin",
+    "deepseek-harness",
+    "fairy",
+    "hdd",
+    "skin",
+    "theme",
+    "persona",
+    "zzz"
+  ]
+}

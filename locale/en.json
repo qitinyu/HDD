@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "HDD",
+    "description": "One panel for the whole Fairy look: the H.D.D. boot film and holographic cores, glass sidebar, rounded composer band, conversation backdrop (local file or web URL), scrim strength, pinned backdrop, and a switch for each of the three cores; plus an AGENT.md persona editor. Open Settings → HDD. Images must be jpg, png, webp, gif, avif or bmp up to 12 MB; local paths and URLs are served through the DSH host. Saving the persona writes ~/.dsh/AGENT.md and keeps the previous version as .bak-hdd. Changes apply immediately; the boot film plays only on a cold start."
+  }
+}
