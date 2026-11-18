@@ -3466,7 +3466,17 @@ html[data-hdd-skin][data-hdd-capsule="blue"] :is(.GRgSLq_card, .RlGAzG_card) {
         : '[data-conversation-content]'
       const canvas = `html[data-hdd-skin][data-hdd] ${anchor}`
       /* 「关闭背景」只留遮罩，画布就是一块深色底。 */
-      const picture = art === 'none' ? '' : `, ${art === null ? DEFAULT_ART : art}`
+      /*
+       * 「关闭背景」只留遮罩；用自定义图时把随包那张垫在下面。
+       * 背景的多个图层各自独立绘制：上面那层载入失败（图床超时、链接失效、路径写错）
+       * 不会让整条 background-image 作废，底下的随包图照样铺满整块。
+       * 少了这层垫底，一次 502 就是满屏纯色——这正是 1.0 时代「背景不见了」的样子。
+       */
+      const picture = art === 'none'
+        ? ''
+        : art === null
+          ? `, ${DEFAULT_ART}`
+          : `, ${art}, ${DEFAULT_ART}`
 
       const rules = [
         `${canvas} {`
