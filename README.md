@@ -116,9 +116,26 @@ git clone https://github.com/qitinyu/HDD.git
 
 限制：图片仅 jpg/jpeg/png/webp/gif/avif/bmp，单张上限 12 MB，代理超时 15 s。
 
+## 改了代码怎么生效（重载）
+
+`link:` 装法下 DSH 直接读仓库目录，不用重装，但两类代码的生效方式不同：
+
+| 改的文件 | 生效方式 |
+| --- | --- |
+| `client.js`（皮肤、面板、注入的 CSS） | 重载页面 |
+| `index.js`（路由、人格注入、探针） | `remove_bundle` → `install_bundle`，宿主模块缓存不会自己更新 |
+
+**Windows 桌面客户端里重载页面**：`Ctrl+R` 无效——生产构建的应用菜单里根本没有 reload 项（`reloadPageMenu` / `restartAppHostMenu` 被 `...development ? [...] : []` 挡掉了），只剩一个隐藏的 `toggleDevTools`。可用的三条路：
+
+1. 标题栏的菜单按钮 → **开发者工具**（这一项在生产构建里是无条件保留的）→ 在开发者工具窗口里按 `F5` / `Ctrl+R`，或在 Console 里执行 `location.reload()`。
+2. `F12`：注册成了隐藏加速键，主窗口的 `webPreferences.devTools` 是 `true`，没被禁。焦点在输入框里时按键可能被吞掉，先点一下窗口空白处再按。
+3. 退出客户端再打开：窗口的 × 只是隐藏到托盘，真正退出要点托盘图标的「退出」（或同一菜单里的「退出」），然后重新启动。
+
+页面 URL 是 `dsh-app://app/`，由主进程注册的自定义协议，**不能用浏览器打开 `http://127.0.0.1:<port>` 代替**——那个端口是后端服务，直接访问还会 401。
+
 ## 诊断（`/hdd/v1/probe`）
 
-宿主的类名带构建哈希、软件式 DSH 又开不了 F12，改皮肤时只能靠猜。所以留了一条自用的诊断通道：客户端加载 2.5 s 后，把输入区座位（`[data-composer-seat]`）的元素链、计算样式（`background-color` / `background-image` / `box-shadow` / `padding`）、以及几个采样点上 `elementsFromPoint` 的层叠结果 POST 给宿主，宿主落盘成 JSON。
+宿主的类名带构建哈希，靠肉眼又看不出是哪一层在画底色，改皮肤时只能靠猜。所以留了一条自用的诊断通道：客户端加载 2.5 s 后，把输入区座位（`[data-composer-seat]`）的元素链、计算样式（`background-color` / `background-image` / `box-shadow` / `padding`）、以及几个采样点上 `elementsFromPoint` 的层叠结果 POST 给宿主，宿主落盘成 JSON。
 
 **默认不生效**：只有仓库根目录存在 `.probe/ENABLED` 时宿主才收，否则一律 404，页面里没有任何多余请求结果。要临时打开：
 
