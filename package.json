@@ -20,6 +20,7 @@
     "scripts/check-assets.mjs",
     "scripts/asar-peek.cjs",
     "scripts/market-index.mjs",
+    "scripts/publish.mjs",
     "market/*.json",
     "icon.svg",
     "NOTICE.md",
@@ -58,9 +59,10 @@
     "node": ">=18"
   },
   "scripts": {
-    "check": "node --check index.js && node --check client.js && node --check scripts/check-assets.mjs && node --check scripts/asar-peek.cjs && node --check scripts/market-index.mjs",
+    "check": "node --check index.js && node --check client.js && node --check scripts/check-assets.mjs && node --check scripts/asar-peek.cjs && node --check scripts/market-index.mjs && node --check scripts/publish.mjs",
     "check:assets": "node scripts/check-assets.mjs",
     "market:index": "node scripts/market-index.mjs",
+    "publish:npm": "node scripts/publish.mjs",
     "pack:list": "npm pack --dry-run",
     "asar:scan": "node scripts/asar-peek.cjs scan"
   },
