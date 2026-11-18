@@ -22,6 +22,17 @@ const pkg = readJson(path.join(REPO, 'package.json'))
 const times = fs.existsSync(TIMES_PATH) ? readJson(TIMES_PATH) : {}
 const useNow = process.argv.includes('--now')
 
+/*
+ * 运行版本要求必须与 package.json 的 engines.dsh 一致，别在这里另写一份：
+ * 索引里的这个字段是市场判断「能不能装」的依据，写松了会给出一枚假的兼容勾。
+ * 下限带 prerelease 标记（-0）是为了让 0.2.2-rc.x 这类预发布版本也落在范围内——
+ * 纯 >=0.2.0 在默认语义下会把 0.2.2-rc.3 判成不满足。
+ */
+const DSH_RANGE = pkg.engines?.dsh
+if (typeof DSH_RANGE !== 'string' || DSH_RANGE === '') {
+  throw new Error('package.json 缺 engines.dsh，索引无法声明运行版本要求')
+}
+
 /** 版本按 SemVer 降序：索引里最新的排前面，读的人一眼看到当前版本。 */
 const compare = (a, b) => {
   const parse = (v) => v.split(/[.+-]/).map((part) => Number.parseInt(part, 10)).filter((n) => Number.isFinite(n))
@@ -55,7 +66,7 @@ const versions = [...known]
     publishTimestamp: stamps[version],
     /* 发布到 npm 的包：pnpm 直接用 name@version 装，市场也靠这个判断能否更新。 */
     source: { type: 'npm' },
-    engines: { dsh: '>=0.2.0-0' },
+    engines: { dsh: DSH_RANGE },
   }))
 
 const index = {

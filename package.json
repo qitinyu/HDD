@@ -56,7 +56,8 @@
     "url": "https://github.com/qitinyu/HDD/issues"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=18",
+    "dsh": ">=0.2.2-0"
   },
   "scripts": {
     "check": "node --check index.js && node --check client.js && node --check scripts/check-assets.mjs && node --check scripts/asar-peek.cjs && node --check scripts/market-index.mjs && node --check scripts/publish.mjs",
