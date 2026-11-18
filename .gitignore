@@ -18,3 +18,4 @@ desktop.ini
 .probe/
 .build/
 .tmp-*/
+.cache/

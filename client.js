@@ -3855,6 +3855,10 @@ html[data-hdd-skin][data-hdd-capsule="blue"] :is(.GRgSLq_card, .RlGAzG_card) {
     }
 
     function reportComposerProbe() {
+      void runComposerProbe()
+    }
+
+    async function runComposerProbe() {
       try {
         const seat = document.querySelector('[data-composer-seat]')
           ?? document.querySelector('[class*="_composerSeat"]')
@@ -3865,6 +3869,37 @@ html[data-hdd-skin][data-hdd-capsule="blue"] :is(.GRgSLq_card, .RlGAzG_card) {
         const card = seat === null ? null : seat.querySelector('[class*="_card"]')
         const stack = seat === null ? null : seat.querySelector('[class*="_composerStack"]')
         const box = seat === null ? null : seat.getBoundingClientRect()
+        /*
+         * 艺术图到底有没有真的进到页面里。
+         * 计算样式里出现 url(...) 只说明 CSS 认了这条规则，不说明那张图能载入：
+         * 自定义协议、代理路由、跨域策略任何一处不通，背景就只剩底色。
+         * 所以这里同时问两件事：fetch 得到什么状态码和多少字节，Image 能不能 onload。
+         */
+        const art = await (async () => {
+          const node = document.querySelector('[data-slot="main.conversation"] > [data-phase]')
+          if (node === null) return { node: false }
+          const image = getComputedStyle(node).backgroundImage
+          const match = /url\("?([^")]+)"?\)/.exec(image)
+          if (match === null) return { node: true, url: null }
+          const url = match[1]
+          const out = { node: true, url, fetchStatus: null, fetchBytes: null, img: null, error: null }
+          try {
+            const res = await fetch(url, { cache: 'no-store' })
+            out.fetchStatus = res.status
+            out.fetchBytes = (await res.arrayBuffer()).byteLength
+          }
+          catch (error) {
+            out.error = String(error)
+          }
+          out.img = await new Promise((resolve) => {
+            const probe = new Image()
+            probe.onload = () => resolve({ ok: true, w: probe.naturalWidth, h: probe.naturalHeight })
+            probe.onerror = () => resolve({ ok: false })
+            probe.src = url
+            setTimeout(() => resolve({ ok: false, timeout: true }), 8000)
+          })
+          return out
+        })()
         const payload = {
           at: new Date().toISOString(),
           href: String(location.href),
@@ -3893,6 +3928,7 @@ html[data-hdd-skin][data-hdd-capsule="blue"] :is(.GRgSLq_card, .RlGAzG_card) {
             const node = document.querySelector('[data-slot="main.conversation"] > [data-phase]')
             return node === null ? null : probeStyle(node)
           })(),
+          art,
           /* 滚到底时，窗口最底部那几点上究竟压着谁：探针跑在加载后 2.5 s，
              那时页面通常还在顶部，所以先自己滚到底再量，量完还原。 */
           foot: (() => {

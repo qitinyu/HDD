@@ -139,7 +139,9 @@ plugin_manager action=set_bundle target=@deepseek-ai/dsh-experimental-plugin-mar
 | `/hdd/v1/probe` | POST | 皮肤诊断落盘，默认关闭（见下） |
 | `/hdd/v1/stamp` | GET / HEAD | `client.js` 指纹，供开发期自动重载，默认关闭（见下） |
 
-限制：图片仅 jpg/jpeg/png/webp/gif/avif/bmp，单张上限 12 MB，代理超时 15 s。
+限制：图片仅 jpg/jpeg/png/webp/gif/avif/bmp，单张上限 12 MB，代理超时 45 s。
+
+`/hdd/v1/proxy` 取回的图会落盘到仓库根的 `.cache/`（正文 + 元信息，按 URL 的 sha1 命名，30 天过期），命中时本地直出并带 `immutable`。这不是优化而是必要项：某个图床回 1.6 MB 要 10–27 秒，一次超时就会让 `background-image` 整页作废、只剩纯色底。`.cache/` 不入库。
 
 ## 改了代码怎么生效（重载）
 
@@ -171,6 +173,8 @@ mkdir -p .probe && echo 1 > .probe/ENABLED   # Windows: New-Item -ItemType Direc
 ```
 
 报告写到 `.probe/report-<时间戳>.json`，最新的另存一份 `.probe/latest.json`。`.probe/` 已在 `.gitignore` 里，不会入库。排查完删掉 `ENABLED` 即可关回去。
+
+里面有四个字段专治「背景看不见」这类扯皮：`backdrop` 是承载面自己的计算样式（`background-image` 到底有没有那条 `url()`），`art` 是真去把那条 URL 载一遍（`fetchStatus` / `fetchBytes` / `image.decode`），`foot` 是滚到底时窗口底部五个采样点的层叠结果（谁在最上面、是不是透明的），`chain` 是座位向上十层祖先。三者一对就能分清三种故障：规则没生效、图载不进来、被某层盖住。
 
 ### 翻安装包找类名（`scripts/asar-peek.cjs`）
 

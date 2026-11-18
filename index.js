@@ -8,6 +8,7 @@
  *
  * 除人格写入外全部只读、无状态；界面配置存在浏览器 localStorage（见 client.js）。
  */
+import { createHash } from 'node:crypto'
 import { createReadStream, readFileSync } from 'node:fs'
 import { mkdir, readFile, stat, writeFile } from 'node:fs/promises'
 import { homedir } from 'node:os'
@@ -20,9 +21,16 @@ const PREFIX = '/hdd'
 const PROBE_DIR = fileURLToPath(new URL('./.probe', import.meta.url))
 const MARKET_INDEX_FILE = fileURLToPath(new URL('./market/market-index.json', import.meta.url))
 const CLIENT_FILE = fileURLToPath(new URL('./client.js', import.meta.url))
+const CACHE_DIR = fileURLToPath(new URL('./.cache', import.meta.url))
 const MAX_BYTES = 12 * 1024 * 1024
 const MAX_PERSONA_BYTES = 512 * 1024
-const FETCH_TIMEOUT_MS = 15000
+/*
+ * 远程图片走中转，慢站是常态：实测某个图床 27 秒才回 1.6 MB，
+ * 而浏览器给 background-image 的耐心远小于此 —— 超时一次，背景整页就是纯色。
+ * 所以这里给足 45 秒，并把成功的响应落盘，之后同源直出、毫秒级。
+ */
+const FETCH_TIMEOUT_MS = 45000
+const CACHE_TTL_MS = 30 * 24 * 3600 * 1000
 
 const asset = (name, type) => ({
   file: fileURLToPath(new URL(`./assets/${name}`, import.meta.url)),
@@ -130,6 +138,52 @@ async function serveLocal(req, res, query) {
   stream.pipe(res)
 }
 
+/** 远程图片的落盘缓存：key 取 URL 的 sha1，正文与元信息分两个文件。 */
+function cachePaths(href) {
+  const key = createHash('sha1').update(href).digest('hex').slice(0, 32)
+  return { body: join(CACHE_DIR, `${key}.bin`), meta: join(CACHE_DIR, `${key}.json`) }
+}
+
+async function readCache(href) {
+  const { body, meta } = cachePaths(href)
+  try {
+    const info = await stat(body)
+    if (!info.isFile() || Date.now() - info.mtimeMs > CACHE_TTL_MS) return null
+    const saved = JSON.parse(await readFile(meta, 'utf8'))
+    if (typeof saved?.type !== 'string' || !saved.type.startsWith('image/')) return null
+    return { body, type: saved.type, size: info.size }
+  }
+  catch {
+    return null
+  }
+}
+
+async function writeCache(href, type, bytes) {
+  const { body, meta } = cachePaths(href)
+  try {
+    await mkdir(CACHE_DIR, { recursive: true })
+    await writeFile(body, bytes)
+    await writeFile(meta, JSON.stringify({ href, type, savedAt: Date.now() }))
+  }
+  catch (error) {
+    console.error('[hdd] art cache write failed', error)
+  }
+}
+
+function streamCached(req, res, hit) {
+  res.writeHead(200, {
+    'Content-Type': hit.type,
+    'Content-Length': String(hit.size),
+    'Cache-Control': 'public, max-age=604800, immutable',
+    'Access-Control-Allow-Origin': '*',
+    'X-Content-Type-Options': 'nosniff',
+  })
+  if (req.method === 'HEAD') return res.end()
+  const stream = createReadStream(hit.body)
+  stream.on('error', () => res.destroy())
+  stream.pipe(res)
+}
+
 /** GET /hdd/v1/proxy?u=<http(s) 图片地址> */
 async function serveRemote(req, res, query) {
   const raw = (query.get('u') ?? '').trim()
@@ -145,6 +199,9 @@ async function serveRemote(req, res, query) {
   if (target.protocol !== 'http:' && target.protocol !== 'https:') {
     return plain(res, 400, 'only http(s) urls are accepted')
   }
+
+  const hit = await readCache(target.href)
+  if (hit !== null) return streamCached(req, res, hit)
 
   const controller = new AbortController()
   const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS)
@@ -164,6 +221,8 @@ async function serveRemote(req, res, query) {
 
     const bytes = Buffer.from(await upstream.arrayBuffer())
     if (bytes.length > MAX_BYTES) return plain(res, 413, 'image too large')
+
+    await writeCache(target.href, type, bytes)
 
     res.writeHead(200, imageHeaders(type, bytes.length))
     if (req.method === 'HEAD') return res.end()

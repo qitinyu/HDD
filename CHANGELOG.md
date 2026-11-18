@@ -15,6 +15,9 @@
 - **运行版本要求 `engines.dsh: ">=0.2.2-0"`**：2.0.0 的背景承载面依赖 `[data-slot="main.conversation"] > [data-phase]`，更旧的宿主没有这层结构。下限写成 `-0` 并非笔误——`>=0.2.0` 在 semver 默认语义下会把正在跑的 `0.2.2-rc.3` 判成不满足（预发布版本只在比较元组一致且带预发布标记时才被接受），那会让市场显示「需要更新 DSH」而实际又能装。
 - **新增 `scripts/check-index.mjs`**：直接从 `app.asar` 取出市场索引的真校验器（连带里面那份 `semver`）跑一遍 `parseMarketIndex`，不需要 `npm install`。上面那处 `engines.dsh` 陷阱就是它抓出来的——README 只讲行为，写错字段不会自己报错。
 - 索引里 `source` 显式钉 `registry = https://registry.npmjs.org`：本机 pnpm 默认走 npmmirror，镜像同步新包有延迟，发布后立刻点安装会撞 404。
+- **远程背景图落盘缓存（`/hdd/v1/proxy`）**：中转超时从 15 秒放宽到 45 秒，成功的响应写入 `.cache/`（正文 + 元信息，按 URL 的 sha1 命名，30 天过期），命中时本地直出并带 `immutable`。原因见下一条——图片没画出来，问题不在 CSS，在图上得太慢。
+- **修「背景整片纯色」**：真机抓帧显示对话区恒为 `#04060d`（只剩 fallback 底色），而计算样式里 `background-image` 明明带着图。探针在同一时刻给出答案：`new Image()` 载入 1920×1080 成功（命中浏览器缓存），而 `fetch(..., {cache:'no-store'})` 走中转拿到 `502 / 18 字节`。实测那张图床回 1.6 MB 需要 10–27 秒，超过中转 15 秒上限——超时一次，`background-image` 就整页作废。缓存后同一请求从 10,813 ms 降到 84 ms。
+- 探针新增 `art` 字段：`url` / `fetchStatus` / `fetchBytes` / `image.decode`，用来区分「CSS 没生效」「图载不进来」「被某层盖住」这三种截然不同的故障。
 - 皮肤美术部分（开机影片、三颗全息核心、玻璃侧栏、面板）保持原样；2.0.0 改的是背景模型与命名，不是重写。
 - 版本 2.0.0。
 
