@@ -12,6 +12,9 @@
 - 面板说明文案同步：不再提「输入区外框」。
 - **开发期自动重载**：新增 `/hdd/v1/stamp`（`client.js` 的 mtime + size 指纹，与探针一样由 `.probe/ENABLED` 把关）。页面半身每四秒问一次，指纹一变就自己 `location.reload()`，省掉「改完样式还得手动进开发者工具按 F5」。npm 安装的包没有 `.probe/`，一律 404，静默停摆。
 - **新增插件市场索引**：`scripts/market-index.mjs` 生成 format 1 索引（`market/market-index.json`），随包发布并由新的 `/hdd/v1/market-index.json` 路由对外提供，所以索引永远和插件版本同步、不依赖第三方托管。发布到 npm 后，装上官方实验性市场组合包即可在「发现」页搜到并安装；更新走「已安装」页的版本区块。
+- **运行版本要求 `engines.dsh: ">=0.2.2-0"`**：2.0.0 的背景承载面依赖 `[data-slot="main.conversation"] > [data-phase]`，更旧的宿主没有这层结构。下限写成 `-0` 并非笔误——`>=0.2.0` 在 semver 默认语义下会把正在跑的 `0.2.2-rc.3` 判成不满足（预发布版本只在比较元组一致且带预发布标记时才被接受），那会让市场显示「需要更新 DSH」而实际又能装。
+- **新增 `scripts/check-index.mjs`**：直接从 `app.asar` 取出市场索引的真校验器（连带里面那份 `semver`）跑一遍 `parseMarketIndex`，不需要 `npm install`。上面那处 `engines.dsh` 陷阱就是它抓出来的——README 只讲行为，写错字段不会自己报错。
+- 索引里 `source` 显式钉 `registry = https://registry.npmjs.org`：本机 pnpm 默认走 npmmirror，镜像同步新包有延迟，发布后立刻点安装会撞 404。
 - 皮肤美术部分（开机影片、三颗全息核心、玻璃侧栏、面板）保持原样；2.0.0 改的是背景模型与命名，不是重写。
 - 版本 2.0.0。
 

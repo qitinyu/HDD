@@ -64,8 +64,10 @@ const versions = [...known]
   .map((version) => ({
     version,
     publishTimestamp: stamps[version],
-    /* 发布到 npm 的包：pnpm 直接用 name@version 装，市场也靠这个判断能否更新。 */
-    source: { type: 'npm' },
+    /* 发布到 npm 的包：pnpm 直接用 name@version 装，市场也靠这个判断能否更新。
+       注册表显式钉在 npmjs：本机 pnpm 默认走 npmmirror，镜像同步新包有延迟，
+       发布后立刻点安装会撞 404。钉住源头，市场里第一次点就能装上。 */
+    source: { type: 'npm', registry: 'https://registry.npmjs.org' },
     engines: { dsh: DSH_RANGE },
   }))
 

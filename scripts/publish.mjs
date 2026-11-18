@@ -35,6 +35,9 @@ run('node', ['--check', 'index.js'])
 run('node', ['--check', 'client.js'])
 run('node', ['--check', 'scripts/market-index.mjs'])
 run('node', ['scripts/check-assets.mjs'])
+run('node', ['scripts/market-index.mjs', '--now'])
+/* 索引必须过真校验器再发：schema 陷阱（如 engines.dsh 少写 -0）不会自己报错。 */
+run('node', ['scripts/check-index.mjs'])
 
 if (dryRun) {
   /*

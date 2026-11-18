@@ -20,6 +20,7 @@
     "scripts/check-assets.mjs",
     "scripts/asar-peek.cjs",
     "scripts/market-index.mjs",
+    "scripts/check-index.mjs",
     "scripts/publish.mjs",
     "market/*.json",
     "icon.svg",
@@ -60,9 +61,11 @@
     "dsh": ">=0.2.2-0"
   },
   "scripts": {
-    "check": "node --check index.js && node --check client.js && node --check scripts/check-assets.mjs && node --check scripts/asar-peek.cjs && node --check scripts/market-index.mjs && node --check scripts/publish.mjs",
+    "check": "node --check index.js && node --check client.js && node --check scripts/check-assets.mjs && node --check scripts/asar-peek.cjs && node --check scripts/market-index.mjs && node --check scripts/check-index.mjs && node --check scripts/publish.mjs",
     "check:assets": "node scripts/check-assets.mjs",
+    "check:index": "node scripts/check-index.mjs",
     "market:index": "node scripts/market-index.mjs",
+    "market:index:now": "node scripts/market-index.mjs --now",
     "publish:npm": "node scripts/publish.mjs",
     "pack:list": "npm pack --dry-run",
     "asar:scan": "node scripts/asar-peek.cjs scan"
