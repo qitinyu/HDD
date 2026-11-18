@@ -10,6 +10,7 @@
 - **命名空间归位**：`data-fairy-*` / `--fairy-*` 全部改为 `data-hdd-*` / `--hdd-*`，模块 id 与 effect 标签改为 `dsh-hdd` / `hdd:`；新增根属性 `data-hdd-version`。上游包名 `dsh-fairy-splash` 只留在版权说明里。
 - 探针（`/hdd/v1/probe`）扩展：额外回传 `canvas` / `body` / `main` / `backdrop`（承载面本身）的计算样式，以及 `foot`（滚动位置、座位底边、窗口最底部左中右多点 `elementsFromPoint` 的层叠结果）。`foot` 会先把滚动条拉到底再量、量完还原。
 - 面板说明文案同步：不再提「输入区外框」。
+- **开发期自动重载**：新增 `/hdd/v1/stamp`（`client.js` 的 mtime + size 指纹，与探针一样由 `.probe/ENABLED` 把关）。页面半身每四秒问一次，指纹一变就自己 `location.reload()`，省掉「改完样式还得手动进开发者工具按 F5」。npm 安装的包没有 `.probe/`，一律 404，静默停摆。
 - **新增插件市场索引**：`scripts/market-index.mjs` 生成 format 1 索引（`market/market-index.json`），随包发布并由新的 `/hdd/v1/market-index.json` 路由对外提供，所以索引永远和插件版本同步、不依赖第三方托管。发布到 npm 后，装上官方实验性市场组合包即可在「发现」页搜到并安装；更新走「已安装」页的版本区块。
 - 皮肤美术部分（开机影片、三颗全息核心、玻璃侧栏、面板）保持原样；2.0.0 改的是背景模型与命名，不是重写。
 - 版本 2.0.0。

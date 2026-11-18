@@ -19,6 +19,7 @@ export const inject = ['webServer', 'systemPrompt']
 const PREFIX = '/hdd'
 const PROBE_DIR = fileURLToPath(new URL('./.probe', import.meta.url))
 const MARKET_INDEX_FILE = fileURLToPath(new URL('./market/market-index.json', import.meta.url))
+const CLIENT_FILE = fileURLToPath(new URL('./client.js', import.meta.url))
 const MAX_BYTES = 12 * 1024 * 1024
 const MAX_PERSONA_BYTES = 512 * 1024
 const FETCH_TIMEOUT_MS = 15000
@@ -304,6 +305,50 @@ async function serveMarketIndex(req, res) {
   res.end(body)
 }
 
+/*
+ * GET /hdd/v1/stamp
+ *
+ * 开发期自动重载用的一枚指纹：client.js 的修改时间与大小。页面半身在加载后每四秒
+ * 问一次，指纹一变就自己刷一次，省掉「改完样式还得手动重载客户端」这一步。
+ * 与探针同样由 `.probe/ENABLED` 把关：npm 安装的包没有这个文件，拿 404，静默停摆。
+ */
+async function serveStamp(req, res) {
+  if (req.method !== 'GET' && req.method !== 'HEAD') {
+    res.writeHead(405, { Allow: 'GET, HEAD' })
+    return res.end()
+  }
+
+  let enabled = false
+  try {
+    enabled = (await stat(join(PROBE_DIR, 'ENABLED'))).isFile()
+  }
+  catch {
+    enabled = false
+  }
+  if (!enabled) return plain(res, 404, 'stamp disabled')
+
+  let info
+  try {
+    info = await stat(CLIENT_FILE)
+  }
+  catch (error) {
+    return json(res, 500, { error: String(error?.message ?? error) })
+  }
+
+  const body = JSON.stringify({
+    stamp: `${Math.round(info.mtimeMs)}-${info.size}`,
+    mtime: info.mtimeMs,
+    size: info.size,
+  })
+  res.writeHead(200, {
+    'Content-Type': 'application/json; charset=utf-8',
+    'Content-Length': String(Buffer.byteLength(body)),
+    'Cache-Control': 'no-store',
+  })
+  if (req.method === 'HEAD') return res.end()
+  res.end(body)
+}
+
 async function serve(req, res) {
   let url
   try {
@@ -324,6 +369,7 @@ async function serve(req, res) {
 
   if (url.pathname === `${PREFIX}/v1/persona`) return servePersona(req, res)
   if (url.pathname === `${PREFIX}/v1/probe`) return serveProbe(req, res)
+  if (url.pathname === `${PREFIX}/v1/stamp`) return serveStamp(req, res)
   if (url.pathname === `${PREFIX}/v1/market-index.json`) return serveMarketIndex(req, res)
 
   if (req.method !== 'GET' && req.method !== 'HEAD') {

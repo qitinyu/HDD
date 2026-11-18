@@ -135,6 +135,7 @@ plugin_manager action=set_bundle target=@deepseek-ai/dsh-experimental-plugin-mar
 | `/hdd/v1/persona` | GET / HEAD / POST | 读写 `~/.dsh/AGENT.md` |
 | `/hdd/v1/market-index.json` | GET / HEAD | 插件市场索引（format 1，内容来自 `market/market-index.json`） |
 | `/hdd/v1/probe` | POST | 皮肤诊断落盘，默认关闭（见下） |
+| `/hdd/v1/stamp` | GET / HEAD | `client.js` 指纹，供开发期自动重载，默认关闭（见下） |
 
 限制：图片仅 jpg/jpeg/png/webp/gif/avif/bmp，单张上限 12 MB，代理超时 15 s。
 
@@ -146,6 +147,8 @@ plugin_manager action=set_bundle target=@deepseek-ai/dsh-experimental-plugin-mar
 | --- | --- |
 | `client.js`（皮肤、面板、注入的 CSS） | 重载页面 |
 | `index.js`（路由、人格注入、探针） | `remove_bundle` → `install_bundle`，宿主模块缓存不会自己更新 |
+
+**开发期可以免掉这一步**：仓库根有 `.probe/ENABLED` 时，页面半身每四秒问一次 `/hdd/v1/stamp`（指纹＝`client.js` 的修改时间与大小），指纹一变就自己 `location.reload()`。也就是说只要开头重载过一次，之后改 `client.js` 存盘即可，页面几秒内自己刷新。npm 安装的包没有 `.probe/`，这条通道一律 404，静默停摆——不会打扰使用者。
 
 **Windows 桌面客户端里重载页面**：`Ctrl+R` 无效——生产构建的应用菜单里根本没有 reload 项（`reloadPageMenu` / `restartAppHostMenu` 被 `...development ? [...] : []` 挡掉了），只剩一个隐藏的 `toggleDevTools`。可用的三条路：
 

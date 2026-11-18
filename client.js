@@ -3942,6 +3942,29 @@ html[data-hdd-skin][data-hdd-capsule="blue"] :is(.GRgSLq_card, .RlGAzG_card) {
       catch {}
     }
 
+    /*
+     * 开发期自动重载。宿主把 client.js 在页面加载时读一次，之后改文件不会自己生效，
+     * 而这套桌面客户端里没有 Ctrl+R，重载要绕到开发者工具里去按 F5。
+     * 这里每四秒问一次 /hdd/v1/stamp（宿主半身只在存在 .probe/ENABLED 时对外提供），
+     * 指纹一变就让页面自己刷一次；npm 安装的包没有 .probe/，拿 404 后什么都不做。
+     */
+    let stampTimer = null
+    function watchStamp() {
+      let last = null
+      const tick = () => {
+        fetch('/hdd/v1/stamp', { cache: 'no-store' })
+          .then((res) => (res.ok ? res.json() : null))
+          .then((data) => {
+            if (data === null || typeof data.stamp !== 'string') return
+            if (last === null) { last = data.stamp; return }
+            if (data.stamp !== last) location.reload()
+          })
+          .catch(() => {})
+      }
+      tick()
+      stampTimer = setInterval(tick, 4000)
+    }
+
     return {
       inject: __splash.inject,
       apply(ctx) {
@@ -3992,6 +4015,14 @@ html[data-hdd-skin][data-hdd-capsule="blue"] :is(.GRgSLq_card, .RlGAzG_card) {
         /* 诊断探针：等页面把输入区渲染出来跑一次。宿主没开记录时拿 404，无副作用。 */
         const probeTimer = setTimeout(reportComposerProbe, 2500)
         ctx.effect(() => () => clearTimeout(probeTimer), 'hdd: composer probe')
+
+        /* 开发期自动重载：改完 client.js，页面几秒后自己刷新。见 watchStamp 的说明。 */
+        ctx.effect(() => {
+          watchStamp()
+          return () => {
+            if (stampTimer !== null) clearInterval(stampTimer)
+          }
+        }, 'hdd: stamp watch')
 
         if (ctx.slots === undefined || typeof ctx.slots.inject !== 'function') return
         ctx.slots.inject('settings.section', () => ctx.slots.register({
