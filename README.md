@@ -2,7 +2,7 @@
 
 DeepSeek Harness 的 Fairy 皮肤与管家面板：**H.D.D. 开机影片、全息核心、玻璃侧边栏、输入区圆角、对话区背景、遮罩浓度、AGENT.md 人格编辑** —— 全部收在一个面板里，入口是 **设置 → HDD**。
 
-仓库：<https://github.com/qitinyu/HDD> ｜ 版本：1.0.4 ｜ 许可：MIT（代码）
+仓库：<https://github.com/qitinyu/HDD> ｜ 版本：1.0.5 ｜ 许可：MIT（代码）
 
 ## 来源与二次开发声明
 
@@ -49,7 +49,7 @@ plugin_manager  action=install_bundle  target=<本仓库绝对路径>
 npm publish --access public
 ```
 
-然后按包名装：`plugin_manager action=install_bundle target=dsh-hdd@1.0.4`。
+然后按包名装：`plugin_manager action=install_bundle target=dsh-hdd@1.0.5`。
 
 发布前必须处理两件事，否则是侵权分发：
 
@@ -92,6 +92,7 @@ git clone https://github.com/qitinyu/HDD.git
 | 分组 | 项 |
 | --- | --- |
 | 背景 | 来源（跟随皮肤 / 本地文件 / 网络 URL / 关闭）、路径或 URL、遮罩浓度 0–100%、背景固定 |
+| 输入区 | 灰底外框（默认关闭）、输入框背景（蓝色亚克力 / 白色亚克力） |
 | 全息核心 | 新会话页（屏幕正中）、对话区（顶部小眼睛）、标题栏，三颗分别开关 |
 | 人格 | 直接编辑 `AGENT.md`，保存写入 `~/.dsh/AGENT.md`，上一版留成 `.bak-hdd` |
 
@@ -111,8 +112,35 @@ git clone https://github.com/qitinyu/HDD.git
 | `/hdd/v1/file?p=<绝对路径>` | GET / HEAD | 本地背景图 |
 | `/hdd/v1/proxy?u=<http(s) 图片地址>` | GET / HEAD | 网络背景图（宿主代取） |
 | `/hdd/v1/persona` | GET / HEAD / POST | 读写 `~/.dsh/AGENT.md` |
+| `/hdd/v1/probe` | POST | 皮肤诊断落盘，默认关闭（见下） |
 
 限制：图片仅 jpg/jpeg/png/webp/gif/avif/bmp，单张上限 12 MB，代理超时 15 s。
+
+## 诊断（`/hdd/v1/probe`）
+
+宿主的类名带构建哈希、软件式 DSH 又开不了 F12，改皮肤时只能靠猜。所以留了一条自用的诊断通道：客户端加载 2.5 s 后，把输入区座位（`[data-composer-seat]`）的元素链、计算样式（`background-color` / `background-image` / `box-shadow` / `padding`）、以及几个采样点上 `elementsFromPoint` 的层叠结果 POST 给宿主，宿主落盘成 JSON。
+
+**默认不生效**：只有仓库根目录存在 `.probe/ENABLED` 时宿主才收，否则一律 404，页面里没有任何多余请求结果。要临时打开：
+
+```bash
+mkdir -p .probe && echo 1 > .probe/ENABLED   # Windows: New-Item -ItemType Directory .probe
+```
+
+报告写到 `.probe/report-<时间戳>.json`，最新的另存一份 `.probe/latest.json`。`.probe/` 已在 `.gitignore` 里，不会入库。排查完删掉 `ENABLED` 即可关回去。
+
+### 翻安装包找类名（`scripts/asar-peek.cjs`）
+
+CSS Module 的类名带构建哈希，会随版本变；**稳定的是宿主自己的 `data-*` 属性**（如 `[data-composer-seat]`、`[data-conversation-scroll]`），优先用属性选择器。非要用类名时，从安装包里翻：
+
+```bash
+# 在 app.asar 原始字节里搜关键字，打印前后 400 字节上下文
+node scripts/asar-peek.cjs scan "C:/Users/<you>/AppData/Local/Programs/.../resources/app.asar" composerSeat
+
+# 按扩展名把文件解出来（只解 .css 之类，避免摊开两百兆）
+node scripts/asar-peek.cjs extract "C:/.../app.asar" .tmp-asar .css
+```
+
+`asar` 里的文件是原样存放的，所以 `scan` 不需要解包。Windows 上安装包一般在 `%LOCALAPPDATA%\Programs\<app>\resources\app.asar`。
 
 ## 目录结构
 
@@ -123,8 +151,9 @@ dsh-hdd/
   cordis.patch.yml      bundle 行：id=hdd, name=dsh-hdd
   icon.svg              插件图标
   locale/{zh,en}.json   标题与描述
-  assets/               素材，不入库（见上）
+  assets/               素材，随仓库分发（版权见上）
   scripts/check-assets.mjs
+  scripts/asar-peek.cjs 诊断工具：翻 app.asar 找类名 / 解 CSS
 ```
 
 ## 已知限制

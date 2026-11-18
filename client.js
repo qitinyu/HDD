@@ -495,7 +495,8 @@ html[data-fairy-skin] ._3GBCTG_summaryText { color: #a9c1e8 !important; }
  * a single dark hairline rather than a long fade, so the boundary reads as a
  * deliberate frame instead of a gradient smudge.
  */
-html[data-fairy-skin] .an3WzG_composerSeat {
+html[data-fairy-skin][data-hdd-band="on"] .an3WzG_composerSeat,
+html[data-fairy-skin][data-hdd-band="on"] [data-composer-seat] {
   background: linear-gradient(180deg, #4a4f57 0%, #3b4048 100%) !important;
   box-shadow: none !important;
 }
@@ -512,8 +513,9 @@ html[data-fairy-skin] .an3WzG_composerSeat {
  * its own composer element; matching the stable suffix keeps both screens on
  * one treatment instead of one grey band and one bare strip.
  */
-html[data-fairy-skin] [class*="_composerSeat"],
-html[data-fairy-skin] [class*="_composerStack"] {
+html[data-fairy-skin][data-hdd-band="on"] [class*="_composerSeat"],
+html[data-fairy-skin][data-hdd-band="on"] [data-composer-seat],
+html[data-fairy-skin][data-hdd-band="on"] [class*="_composerStack"] {
   background: linear-gradient(180deg, #4a4f57 0%, #3b4048 100%) !important;
   box-shadow: none !important;
 }
@@ -3287,32 +3289,44 @@ html[data-fairy-skin-legacy] [class*="_scrollBody"] {
   --dsh-composer-frame-radius: 26px;
 }
 
+/*
+ * 输入区座位（composer seat）：内边距与圆角常驻，用来做四周留白与外框形状。
+ * 座位是宿主自己的 [data-composer-seat]（稳定属性，不随构建哈希变），
+ * 旧构建只有类名，两条都写。
+ *
+ * 底色只在「灰底外框」打开时才刷。默认关闭，此时一行不刷底——宿主自己会给
+ * 座位画一条 --dsw-alias-bg-base 的竖向渐变（0px 透明 → 36px 实色），座位
+ * 又被 margin-top:auto 撑到柱底，于是滚到底就露出一整块深色。清它必须清
+ * 整个 background 简写（连 background-image 一起），只清 background-color
+ * 会留下那条渐变。
+ */
+[data-composer-seat],
 [class*="_composerSeat"] {
   padding:
     var(--dsh-composer-gap-top)
     var(--dsh-composer-gap-x)
     var(--dsh-composer-gap-bottom);
   border-radius: var(--dsh-composer-frame-radius);
+}
+
+html[data-fairy-skin][data-hdd-band="on"] :is([data-composer-seat], [class*="_composerSeat"]) {
   background: var(--dsw-alias-bg-base);
 }
 
-html[data-fairy-skin][data-hdd-band="off"] :is([class*="_composerSeat"], [class*="_composerStack"]) {
-  background: transparent !important;
+html[data-fairy-skin][data-hdd-band="off"] :is(
+  [data-composer-seat],
+  [class*="_composerSeat"],
+  [class*="_composerStack"]
+) {
+  background: none !important;
   box-shadow: none !important;
 }
 
-html[data-fairy-skin][data-hdd-band="off"] .an3WzG_composerSeat {
-  background: transparent !important;
-}
-
 /*
- * 滚到底时输入区周围冒出一块纯色深底（实测颜色 26,30,42，等于
- * --dsw-alias-bg-base），横跨整个对话区宽度，输入卡浮在上面。它不是投影，
- * 是某一层容器把自己的 background-color 刷了上去，而那层的类名没有公开
- * 稳定后缀。所以不猜类名：用 :has() 命中「任何包含输入区座位的祖先」，
- * 只清 background-color，不碰 background-image —— 艺术图挂在更上层的
- * root 上（走 background-image），清掉颜色不动它。
+ * 兜底：万一还有哪层祖先刷了底色（类名不公开始终可能漏），把颜色一并清掉。
+ * 只清 background-color，不动 background-image——艺术图挂在更上层的 root 上。
  */
+html[data-fairy-skin][data-hdd-band="off"] :is(.V4vHZW_root, [data-slot="main.conversation"]) *:has([data-composer-seat]),
 html[data-fairy-skin][data-hdd-band="off"] :is(.V4vHZW_root, [data-slot="main.conversation"]) *:has([class*="_composerSeat"]) {
   background-color: transparent !important;
 }
@@ -3818,6 +3832,90 @@ html[data-fairy-skin][data-hdd-capsule="blue"] :is(.GRgSLq_card, .RlGAzG_card) {
       )
     }
 
+    /* 诊断：把输入区座位的元素链与计算样式回传宿主，落盘成 JSON。
+       只有在仓库根目录存在 `.probe/ENABLED` 时宿主才会收（见 index.js），
+       平时这个请求拿 404，页面里一行多余动静都没有。类名带构建哈希、
+       宿主又不给开 F12，只能靠这条通道拿真实 DOM。 */
+    function probeStyle(el) {
+      const cs = window.getComputedStyle(el)
+      const box = el.getBoundingClientRect()
+      const attrs = []
+      for (const attr of Array.prototype.slice.call(el.attributes).slice(0, 10)) {
+        attrs.push(`${attr.name}="${attr.value}"`)
+      }
+      return {
+        tag: el.tagName.toLowerCase(),
+        cls: typeof el.className === 'string' ? el.className : undefined,
+        attrs,
+        rect: [Math.round(box.left), Math.round(box.top), Math.round(box.width), Math.round(box.height)],
+        bgColor: cs.backgroundColor,
+        bgImage: cs.backgroundImage === 'none' ? 'none' : cs.backgroundImage.slice(0, 240),
+        shadow: cs.boxShadow === 'none' ? 'none' : cs.boxShadow.slice(0, 160),
+        padding: cs.padding,
+        position: cs.position,
+        zIndex: cs.zIndex,
+        opacity: cs.opacity,
+      }
+    }
+
+    function probeAt(x, y) {
+      if (!Number.isFinite(x) || !Number.isFinite(y)) return null
+      const hits = document.elementsFromPoint(x, y)
+      return {
+        point: [Math.round(x), Math.round(y)],
+        layers: hits.slice(0, 5).map(probeStyle),
+      }
+    }
+
+    function reportComposerProbe() {
+      try {
+        const seat = document.querySelector('[data-composer-seat]')
+          ?? document.querySelector('[class*="_composerSeat"]')
+        const chain = []
+        for (let node = seat; node !== null && chain.length < 10; node = node.parentElement) {
+          chain.push(probeStyle(node))
+        }
+        const card = seat === null ? null : seat.querySelector('[class*="_card"]')
+        const stack = seat === null ? null : seat.querySelector('[class*="_composerStack"]')
+        const box = seat === null ? null : seat.getBoundingClientRect()
+        const payload = {
+          at: new Date().toISOString(),
+          href: String(location.href),
+          viewport: [window.innerWidth, window.innerHeight],
+          dpr: window.devicePixelRatio,
+          htmlAttrs: Array.prototype.slice.call(document.documentElement.attributes)
+            .map(attr => `${attr.name}="${attr.value}"`),
+          storedState: (() => {
+            try {
+              return localStorage.getItem('hdd.state')
+            }
+            catch {
+              return null
+            }
+          })(),
+          seatFound: seat !== null,
+          card: card === null ? null : probeStyle(card),
+          stack: stack === null ? null : probeStyle(stack),
+          chain,
+          probes: box === null
+            ? []
+            : [
+                probeAt(box.left + 6, box.top + 30),
+                probeAt(box.left + 6, Math.min(box.bottom - 6, window.innerHeight - 4)),
+                probeAt(box.left + box.width / 2, Math.min(box.bottom - 4, window.innerHeight - 2)),
+                probeAt(box.left + box.width / 2, box.top + 8),
+              ].filter(Boolean),
+        }
+        fetch(`/hdd/v1/probe`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+          keepalive: true,
+        }).catch(() => {})
+      }
+      catch {}
+    }
+
     return {
       inject: __splash.inject,
       apply(ctx) {
@@ -3865,6 +3963,10 @@ html[data-fairy-skin][data-hdd-capsule="blue"] :is(.GRgSLq_card, .RlGAzG_card) {
             root.removeAttribute('data-hdd-capsule')
           }
         }, 'hdd: backdrop, scrim and core visibility')
+
+        /* 诊断探针：等页面把输入区渲染出来跑一次。宿主没开记录时拿 404，无副作用。 */
+        const probeTimer = setTimeout(reportComposerProbe, 2500)
+        ctx.effect(() => () => clearTimeout(probeTimer), 'hdd: composer probe')
 
         if (ctx.slots === undefined || typeof ctx.slots.inject !== 'function') return
         ctx.slots.inject('settings.section', () => ctx.slots.register({

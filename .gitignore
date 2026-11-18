@@ -13,3 +13,6 @@ desktop.ini
 
 # 本地备份
 *.bak-hdd
+
+# 皮肤诊断落盘（.probe/ENABLED 存在时 /hdd/v1/probe 才会写）
+.probe/

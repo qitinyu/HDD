@@ -2,6 +2,13 @@
 
 版本号遵循语义化：`主.次.修`。皮肤或面板行为改变升次版本，纯文案与打包调整升修订号。
 
+## 1.0.5
+
+- 修 1.0.4 没修掉的那块深底：真正来源是**宿主自己**给输入区座位画的 `background: linear-gradient(180deg, color-mix(...bg-base 0%, transparent) 0px, bg-base 36px)`（`ConversationRoot.module.css` 的 `.root[data-phase='active'] .composerSeat`）。座位又被 `margin-top:auto` 撑到柱底，滚到底就露出一整块实色。1.0.4 只清 `background-color`，正好漏掉这条**渐变**（它走 `background-image`）。
+- 改法：座位选择器加上宿主的稳定属性 `[data-composer-seat]`（不再只靠构建哈希类名），「外框关」时用 `background: none` 清整个简写；「外框开」时**才**刷灰底——皮肤原先那两条灰底渐变（`.an3WzG_composerSeat` / `[class*="_composerSeat"]`）此前是无条件生效的，现在一并挂到 `[data-hdd-band="on"]` 下。
+- 新增 `/hdd/v1/probe` 诊断通道（默认关闭）：客户端把座位的元素链与计算样式落盘成 JSON，用来替代开不了的 F12。
+- 版本 1.0.5。
+
 ## 1.0.4
 
 - 修滚到底时输入区周围冒出的纯色深底：实测颜色 `(26,30,42)`＝`--dsw-alias-bg-base`，横跨整个对话区（`x=352..1600`，输入卡上下各一圈），不是投影，而是某层容器刷了自己的 `background-color`。

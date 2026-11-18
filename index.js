@@ -17,6 +17,7 @@ import { fileURLToPath } from 'node:url'
 export const inject = ['webServer', 'systemPrompt']
 
 const PREFIX = '/hdd'
+const PROBE_DIR = fileURLToPath(new URL('./.probe', import.meta.url))
 const MAX_BYTES = 12 * 1024 * 1024
 const MAX_PERSONA_BYTES = 512 * 1024
 const FETCH_TIMEOUT_MS = 15000
@@ -234,6 +235,43 @@ async function servePersona(req, res) {
   }
 }
 
+/** POST /hdd/v1/probe —— 皮肤诊断落盘，仅当仓库根目录有 `.probe/ENABLED` 时收。 */
+async function serveProbe(req, res) {
+  if (req.method !== 'POST') {
+    res.writeHead(405, { Allow: 'POST' })
+    return res.end()
+  }
+
+  let enabled = false
+  try {
+    enabled = (await stat(join(PROBE_DIR, 'ENABLED'))).isFile()
+  }
+  catch {
+    enabled = false
+  }
+  if (!enabled) return plain(res, 404, 'probe disabled')
+
+  let body
+  try {
+    body = await readBody(req, 256 * 1024)
+    JSON.parse(body)
+  }
+  catch (error) {
+    return json(res, 400, { error: String(error?.message ?? error) })
+  }
+
+  const stamp = new Date().toISOString().replace(/[:.]/g, '-')
+  try {
+    await mkdir(PROBE_DIR, { recursive: true })
+    await writeFile(join(PROBE_DIR, `report-${stamp}.json`), body, 'utf8')
+    await writeFile(join(PROBE_DIR, 'latest.json'), body, 'utf8')
+    return json(res, 200, { ok: true, file: `report-${stamp}.json`, bytes: Buffer.byteLength(body) })
+  }
+  catch (error) {
+    return json(res, 500, { error: String(error?.message ?? error) })
+  }
+}
+
 async function serve(req, res) {
   let url
   try {
@@ -253,6 +291,7 @@ async function serve(req, res) {
   }
 
   if (url.pathname === `${PREFIX}/v1/persona`) return servePersona(req, res)
+  if (url.pathname === `${PREFIX}/v1/probe`) return serveProbe(req, res)
 
   if (req.method !== 'GET' && req.method !== 'HEAD') {
     res.writeHead(405, { Allow: 'GET, HEAD' })
