@@ -1,0 +1,82 @@
+{
+  "format": 1,
+  "title": {
+    "en": "H.D.D. — Fairy console skin for DeepSeek",
+    "zh": "H.D.D. —— DeepSeek 的 Fairy 界面"
+  },
+  "description": {
+    "en": "Boot film, holographic cores, a full-height conversation backdrop, a glass input capsule and AGENT.md persona editing — all in one HDD panel.",
+    "zh": "开机影片、全息核心、铺满到底的对话区背景、玻璃输入胶囊，加上 AGENT.md 人格编辑，全在一个 HDD 面板里。"
+  },
+  "metadata": {
+    "categories": {
+      "appearance": {
+        "title": {
+          "en": "Appearance",
+          "zh": "外观"
+        }
+      }
+    },
+    "labels": {
+      "skin": {
+        "title": {
+          "en": "Skin",
+          "zh": "皮肤"
+        }
+      },
+      "persona": {
+        "title": {
+          "en": "Persona",
+          "zh": "人格"
+        }
+      }
+    }
+  },
+  "plugins": [
+    {
+      "name": "dsh-hdd",
+      "title": {
+        "en": "H.D.D.",
+        "zh": "H.D.D. 界面"
+      },
+      "description": {
+        "en": "Fairy console skin: boot film, three holographic cores, conversation backdrop, glass input capsule, persona editor.",
+        "zh": "Fairy 控制台界面：开机影片、三颗全息核心、对话区背景、玻璃输入胶囊、人格编辑器。"
+      },
+      "icon": "data:image/png;base64,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",
+      "author": "YuQi",
+      "homepage": "https://github.com/qitinyu/HDD",
+      "repository": {
+        "url": "https://github.com/qitinyu/HDD"
+      },
+      "metadata": {
+        "category": "appearance",
+        "keywords": [
+          "skin",
+          "theme",
+          "fairy",
+          "zzz",
+          "hdd",
+          "backdrop",
+          "persona"
+        ],
+        "labels": [
+          "skin",
+          "persona"
+        ]
+      },
+      "versions": [
+        {
+          "version": "2.0.0",
+          "publishTimestamp": 1795009844,
+          "source": {
+            "type": "npm"
+          },
+          "engines": {
+            "dsh": ">=0.2.0-0"
+          }
+        }
+      ]
+    }
+  ]
+}

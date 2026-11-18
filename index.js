@@ -18,6 +18,7 @@ export const inject = ['webServer', 'systemPrompt']
 
 const PREFIX = '/hdd'
 const PROBE_DIR = fileURLToPath(new URL('./.probe', import.meta.url))
+const MARKET_INDEX_FILE = fileURLToPath(new URL('./market/market-index.json', import.meta.url))
 const MAX_BYTES = 12 * 1024 * 1024
 const MAX_PERSONA_BYTES = 512 * 1024
 const FETCH_TIMEOUT_MS = 15000
@@ -272,6 +273,37 @@ async function serveProbe(req, res) {
   }
 }
 
+/*
+ * GET /hdd/v1/market-index.json
+ *
+ * 插件市场索引（format 1）由 scripts/market-index.mjs 生成、随包发布；这里只是把它
+ * 用同源地址对外提供，所以索引永远跟着插件版本走，不依赖任何第三方托管。
+ * 读者是 DSH 的市场服务（服务端 fetch），CORS 开着是为了便于本地排查。
+ */
+async function serveMarketIndex(req, res) {
+  if (req.method !== 'GET' && req.method !== 'HEAD') {
+    res.writeHead(405, { Allow: 'GET, HEAD' })
+    return res.end()
+  }
+
+  let body
+  try {
+    body = await readFile(MARKET_INDEX_FILE, 'utf8')
+  }
+  catch {
+    return plain(res, 404, 'market index missing: run scripts/market-index.mjs')
+  }
+
+  res.writeHead(200, {
+    'Content-Type': 'application/json; charset=utf-8',
+    'Content-Length': String(Buffer.byteLength(body)),
+    'Cache-Control': 'no-store',
+    'Access-Control-Allow-Origin': '*',
+  })
+  if (req.method === 'HEAD') return res.end()
+  res.end(body)
+}
+
 async function serve(req, res) {
   let url
   try {
@@ -292,6 +324,7 @@ async function serve(req, res) {
 
   if (url.pathname === `${PREFIX}/v1/persona`) return servePersona(req, res)
   if (url.pathname === `${PREFIX}/v1/probe`) return serveProbe(req, res)
+  if (url.pathname === `${PREFIX}/v1/market-index.json`) return serveMarketIndex(req, res)
 
   if (req.method !== 'GET' && req.method !== 'HEAD') {
     res.writeHead(405, { Allow: 'GET, HEAD' })

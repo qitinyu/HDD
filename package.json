@@ -19,6 +19,8 @@
     "assets/*",
     "scripts/check-assets.mjs",
     "scripts/asar-peek.cjs",
+    "scripts/market-index.mjs",
+    "market/*.json",
     "icon.svg",
     "NOTICE.md",
     "CHANGELOG.md",
@@ -56,10 +58,14 @@
     "node": ">=18"
   },
   "scripts": {
-    "check": "node --check index.js && node --check client.js && node --check scripts/check-assets.mjs && node --check scripts/asar-peek.cjs",
+    "check": "node --check index.js && node --check client.js && node --check scripts/check-assets.mjs && node --check scripts/asar-peek.cjs && node --check scripts/market-index.mjs",
     "check:assets": "node scripts/check-assets.mjs",
+    "market:index": "node scripts/market-index.mjs",
     "pack:list": "npm pack --dry-run",
     "asar:scan": "node scripts/asar-peek.cjs scan"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "keywords": [
     "dsh-plugin",
