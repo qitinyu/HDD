@@ -1,8 +1,8 @@
 # dsh-hdd
 
-DeepSeek Harness 的 Fairy 皮肤与管家面板：**H.D.D. 开机影片、全息核心、玻璃侧边栏、输入区圆角、对话区背景、遮罩浓度、AGENT.md 人格编辑** —— 全部收在一个面板里，入口是 **设置 → HDD**。
+DeepSeek Harness 的 Fairy 皮肤与管家面板：**H.D.D. 开机影片、全息核心、玻璃侧边栏、输入胶囊、对话区背景、遮罩浓度、AGENT.md 人格编辑** —— 全部收在一个面板里，入口是 **设置 → HDD**。
 
-仓库：<https://github.com/qitinyu/HDD> ｜ 版本：1.0.5 ｜ 许可：MIT（代码）
+仓库：<https://github.com/qitinyu/HDD> ｜ 版本：2.0.0 ｜ 许可：MIT（代码）
 
 ## 来源与二次开发声明
 
@@ -49,7 +49,7 @@ plugin_manager  action=install_bundle  target=<本仓库绝对路径>
 npm publish --access public
 ```
 
-然后按包名装：`plugin_manager action=install_bundle target=dsh-hdd@1.0.5`。
+然后按包名装：`plugin_manager action=install_bundle target=dsh-hdd@2.0.0`。
 
 发布前必须处理两件事，否则是侵权分发：
 
@@ -92,11 +92,17 @@ git clone https://github.com/qitinyu/HDD.git
 | 分组 | 项 |
 | --- | --- |
 | 背景 | 来源（跟随皮肤 / 本地文件 / 网络 URL / 关闭）、路径或 URL、遮罩浓度 0–100%、背景固定 |
-| 输入区 | 灰底外框（默认关闭）、输入框背景（蓝色亚克力 / 白色亚克力） |
+| 输入区 | 输入框背景（蓝色亚克力 / 白色亚克力） |
 | 全息核心 | 新会话页（屏幕正中）、对话区（顶部小眼睛）、标题栏，三颗分别开关 |
 | 人格 | 直接编辑 `AGENT.md`，保存写入 `~/.dsh/AGENT.md`，上一版留成 `.bak-hdd` |
 
 配置存在浏览器 `localStorage`，换浏览器或清缓存会回到默认。
+
+## 背景为什么铺得满
+
+对话区那张图挂在主栏 `[data-slot="main"]` 上，不在对话列表里。主栏是布局格子、高度本来就到窗口底边，所以图一直铺到最下面，滚到底也不会在输入框下方露出一块深底。输入区座位从 2.0.0 起不再画任何背景——宿主原先给它刷的 `linear-gradient(180deg, transparent 0px, bg-base 36px)` 配上 `margin-top:auto`，正是那块深底的来源。
+
+面板里的「背景固定」关掉时，图改挂到对话内容上，随消息一起滚。
 
 ## 人格
 

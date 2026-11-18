@@ -1,4 +1,10 @@
-/* 由 build.cjs 生成：皮肤部分来自 dsh-fairy-splash 1.0.24（个人自用，不传播） */
+/*
+ * dsh-hdd 2.0.0 —— H.D.D. 界面：开机影片、全息核心、对话区背景、输入胶囊、人格。
+ *
+ * 2.0.0 的背景模型只有一句话：图挂在文档画布上，不挂在对话区里。
+ * 皮肤的美术部分自 dsh-fairy-splash（二次开发自 dsh-fairy-pack，MIT）而来，
+ * 骨架、控制面板与诊断通道属于本项目。
+ */
 window.__ModuleLoader__.load({
   id: 'dsh-hdd',
   factory(require) {
@@ -45,8 +51,8 @@ window.__ModuleLoader__.load({
      * custom properties feed .fs-hero, which every layer inside is centred on.
      */
     ;(() => {
-      const STAGE_LEFT = '--fairy-stage-left'
-      const STAGE_RIGHT = '--fairy-stage-right'
+      const STAGE_LEFT = '--hdd-stage-left'
+      const STAGE_RIGHT = '--hdd-stage-right'
       const STAGE_SELECTORS = [
         '[data-dsh-center-col]',
         '[data-slot="main.conversation"]',
@@ -115,7 +121,7 @@ window.__ModuleLoader__.load({
      * Drag-time paint shield. While a rail is being resized the app re-lays out
      * the conversation on every pointer move; on top of that the glass panes
      * stack three 22-28px backdrop blurs, which is what turns a drag into a
-     * slideshow. A pointerdown on a divider flips html[data-fairy-resizing] for
+     * slideshow. A pointerdown on a divider flips html[data-hdd-resizing] for
      * the length of the gesture and the stylesheet drops blur, shadows and
      * transitions until it ends.
      */
@@ -124,7 +130,7 @@ window.__ModuleLoader__.load({
       const clear = () => {
         if (!active) return
         active = false
-        document.documentElement.removeAttribute('data-fairy-resizing')
+        document.documentElement.removeAttribute('data-hdd-resizing')
       }
       const DIVIDERS = '[class*="_divider"], [class*="_resize"], [class*="_resizer"], [class*="_gutter"]'
       const isDivider = (node) => {
@@ -135,7 +141,7 @@ window.__ModuleLoader__.load({
       document.addEventListener('pointerdown', (event) => {
         if (!isDivider(event.target)) return
         active = true
-        document.documentElement.setAttribute('data-fairy-resizing', '')
+        document.documentElement.setAttribute('data-hdd-resizing', '')
       }, true)
       /*
        * Second trigger, independent of class names: three layout changes inside
@@ -151,7 +157,7 @@ window.__ModuleLoader__.load({
         hits = hits.filter((t) => now - t < 350)
         if (hits.length >= 3) {
           active = true
-          document.documentElement.setAttribute('data-fairy-resizing', '')
+          document.documentElement.setAttribute('data-hdd-resizing', '')
         }
         window.clearTimeout(settle)
         settle = window.setTimeout(() => {
@@ -200,11 +206,11 @@ window.__ModuleLoader__.load({
  * (icon + wordmark) stays below the splash layer, so no DeepSeek mark appears
  * and nothing is nudged into a different position.
  */
-html[data-fairy-skin][data-fairy-splash-caption] [data-windows-menu] {
+html[data-hdd-skin][data-hdd-splash-caption] [data-windows-menu] {
   filter: drop-shadow(0 1px 9px rgba(0, 0, 0, .8));
   pointer-events: none;
 }
-html[data-fairy-skin][data-fairy-splash-caption] .BynINW_frame:before {
+html[data-hdd-skin][data-hdd-splash-caption] .BynINW_frame:before {
   background: transparent !important;
 }
 .fs-root {
@@ -290,9 +296,9 @@ html[data-fairy-skin][data-fairy-splash-caption] .BynINW_frame:before {
 .fs-halo {
   position: absolute;
   left: 50%;
-  top: var(--fairy-orb-top);
-  width: var(--fairy-orb-size);
-  height: var(--fairy-orb-size);
+  top: var(--hdd-orb-top);
+  width: var(--hdd-orb-size);
+  height: var(--hdd-orb-size);
   transform: translateX(-50%);
   pointer-events: none;
 }
@@ -325,24 +331,24 @@ html[data-fairy-skin][data-fairy-splash-caption] .BynINW_frame:before {
 
 /* =====================================================================
    Fairy H.D.D. skin — the dark blue console shown after the boot film.
-   Every selector is scoped to html[data-fairy-skin], so disabling the
+   Every selector is scoped to html[data-hdd-skin], so disabling the
    bundle restores the untouched app theme.
    ===================================================================== */
-:root[data-fairy-skin] {
+:root[data-hdd-skin] {
   /* Noto Sans SC ships with Windows as a variable face: one family covers the
      light label cut and the heavy conversation cut without synthesised bold. */
-  --fairy-display-font: "Segoe UI", "Noto Sans SC", "Microsoft YaHei UI", "Microsoft YaHei", "Arial", sans-serif;
-  --fairy-orb-size: clamp(180px, min(22.5vw, 33vh), 330px);
-  --fairy-orb-top: 42px;
-  --fairy-chat-top: calc(var(--fairy-orb-size) + 16px);
-  --fairy-line: rgba(196, 205, 218, .55);
+  --hdd-display-font: "Segoe UI", "Noto Sans SC", "Microsoft YaHei UI", "Microsoft YaHei", "Arial", sans-serif;
+  --hdd-orb-size: clamp(180px, min(22.5vw, 33vh), 330px);
+  --hdd-orb-top: 42px;
+  --hdd-chat-top: calc(var(--hdd-orb-size) + 16px);
+  --hdd-line: rgba(196, 205, 218, .55);
   /* How far above the reserved band the message text starts dissolving. */
-  --fairy-chat-fade: 200px;
-  --fairy-chat-fade-from: max(0px, calc(var(--fairy-chat-top) - var(--fairy-chat-fade)));
+  --hdd-chat-fade: 200px;
+  --hdd-chat-fade-from: max(0px, calc(var(--hdd-chat-top) - var(--hdd-chat-fade)));
   color-scheme: dark;
 }
-html[data-fairy-skin] { background: #04060d !important; }
-html[data-fairy-skin] body {
+html[data-hdd-skin] { background: #04060d !important; }
+html[data-hdd-skin] body {
   /* One typeface across the console; the heavy cut is reserved for the
      nameplate and controls, body copy keeps a readable regular weight. */
   /* Latin runs on Segoe UI (rounded humanist terminals), CJK on Noto Sans SC. */
@@ -375,7 +381,7 @@ html[data-fairy-skin] body {
   color: #dbe6ff !important;
   background: #05070e !important;
 }
-html[data-fairy-skin] .BynINW_frame {
+html[data-hdd-skin] .BynINW_frame {
   background:
     linear-gradient(rgba(92, 128, 255, .048) 1px, transparent 1px),
     linear-gradient(90deg, rgba(92, 128, 255, .048) 1px, transparent 1px),
@@ -384,13 +390,13 @@ html[data-fairy-skin] .BynINW_frame {
     #05070e !important;
   background-size: 22px 22px, 22px 22px, auto, auto, auto !important;
 }
-html[data-fairy-skin] .BynINW_frame:before {
+html[data-hdd-skin] .BynINW_frame:before {
   /* Title strip: a solid slab, deeper than the rail so the two never merge. */
   /* Solid, so the native caption overlay (fed the same tone) meets it seamlessly. */
   background: #3b4048 !important;
   border-bottom: 1px solid rgba(0, 0, 0, .55) !important;
 }
-html[data-fairy-skin] .BynINW_sidebarCol {
+html[data-hdd-skin] .BynINW_sidebarCol {
   background:
     linear-gradient(rgba(92, 128, 255, .034) 1px, transparent 1px),
     linear-gradient(90deg, rgba(92, 128, 255, .034) 1px, transparent 1px),
@@ -398,70 +404,75 @@ html[data-fairy-skin] .BynINW_sidebarCol {
   background-size: 22px 22px, 22px 22px, auto !important;
   border-right: 1px solid rgba(91, 124, 220, .16) !important;
 }
-html[data-fairy-skin] ._2H3hWW_root {
+html[data-hdd-skin] ._2H3hWW_root {
   background: transparent !important;
   color: #dfe9ff !important;
 }
-html[data-fairy-skin] :is([data-slot="main"], [data-slot="main.conversation"], .V4vHZW_root, .V4vHZW_frame, .V4vHZW_scroll, .V4vHZW_scroll, .V4vHZW_column, .V4vHZW_root, .V4vHZW_scroll, .V4vHZW_column) {
+html[data-hdd-skin] :is([data-slot="main"], [data-slot="main.conversation"], .V4vHZW_root, .V4vHZW_frame, .V4vHZW_scroll, .V4vHZW_scroll, .V4vHZW_column, .V4vHZW_root, .V4vHZW_scroll, .V4vHZW_column) {
   background: transparent !important;
 }
 /*
- * Conversation backdrop. The artwork sits under a scrim so message text keeps
- * its contrast; the scrim is a plain gradient, the picture is swappable.
- * Set --fairy-chat-art to none to drop the picture and keep the console dark.
+ * Conversation backdrop — the artwork rides on the conversation column itself.
+ *
+ * Two things made the old arrangement show a dark band at the foot of the
+ * screen once the list was scrolled to the bottom, and neither of them was the
+ * picture. The host paints a --dsw-alias-bg-base gradient on the composer seat
+ * (transparent at 0px, solid from 36px) and pins the seat to the foot of the
+ * column with margin-top:auto, so the seat covered the last 147px of the
+ * column with a solid slab. The picture itself hung on this same column, which
+ * is the right surface: it is a layout cell, not a scroller, and its box
+ * already reaches the window's bottom edge.
+ *
+ * So the picture stays where it was and the seat stops painting — see the
+ * composer stylesheet below. The anchor is written as
+ * [data-slot="main.conversation"] > [data-phase] because the two slot wrappers
+ * around the column are display:contents and own no box at all; the stable
+ * attribute on the element that does is data-phase.
  */
-:root[data-fairy-skin] {
-  --fairy-chat-art: url("/hdd/v1/chat-bg.jpg");
+html[data-hdd-skin] body {
+  background: transparent !important;
 }
-html[data-fairy-skin] body:has(.V4vHZW_root) :is(.V4vHZW_root, [data-slot="main.conversation"]),
-html[data-fairy-skin] body:has(.V4vHZW_root[data-phase="hero"]) :is(.V4vHZW_root, [data-slot="main.conversation"]) {
-  background-image:
-    linear-gradient(180deg, rgba(5, 7, 14, .88) 0%, rgba(5, 7, 14, .64) 32%, rgba(5, 7, 14, .82) 100%),
-    var(--fairy-chat-art) !important;
-  background-size: cover !important;
-  background-position: 50% 14% !important;
-  background-repeat: no-repeat !important;
-  background-color: #05070e !important;
+html[data-hdd-skin] #root,
+html[data-hdd-skin] :is([data-conversation-scroll], [data-conversation-content], [data-conversation-session]) {
+  background-color: transparent !important;
+  background-image: none !important;
 }
-/* The new-conversation screen carries the same picture; its headline sits
-   lower and larger, so the scrim is a touch heavier there and the frame is
-   biased toward the face rather than the top edge. */
-html[data-fairy-skin] body:has(.V4vHZW_root[data-phase="hero"]) :is(.V4vHZW_root, [data-slot="main.conversation"]) {
-  background-image:
-    linear-gradient(180deg, rgba(5, 7, 14, .92) 0%, rgba(5, 7, 14, .70) 38%, rgba(5, 7, 14, .90) 100%),
-    var(--fairy-chat-art) !important;
-  background-position: 50% 22% !important;
+html[data-hdd-skin] [data-slot="main.conversation"] > [data-phase] {
+  background-color: #04060d;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 50% 14%;
 }
-html[data-fairy-skin] .an3WzG_header {
+html[data-hdd-skin] .an3WzG_header {
   background: transparent !important;
   border-bottom: 1px solid rgba(91, 124, 220, .13) !important;
   backdrop-filter: none !important;
 }
-html[data-fairy-skin] ._2H3hWW_newSession {
+html[data-hdd-skin] ._2H3hWW_newSession {
   background: linear-gradient(180deg, rgba(12, 22, 43, .90), rgba(7, 14, 28, .92)) !important;
   border: 1px solid rgba(103, 139, 255, .30) !important;
   border-radius: 8px !important;
   color: #dfe9ff !important;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .05), 0 0 18px rgba(70, 110, 255, .08) !important;
 }
-html[data-fairy-skin] ._2H3hWW_newSession:hover {
+html[data-hdd-skin] ._2H3hWW_newSession:hover {
   border-color: rgba(125, 158, 255, .62) !important;
   background: rgba(16, 31, 60, .94) !important;
 }
-html[data-fairy-skin] ._2H3hWW_panelRow,
-html[data-fairy-skin] ._9lTDKa_sessionRow {
+html[data-hdd-skin] ._2H3hWW_panelRow,
+html[data-hdd-skin] ._9lTDKa_sessionRow {
   border-radius: 6px !important;
 }
-html[data-fairy-skin] ._2H3hWW_panelRow:hover,
-html[data-fairy-skin] ._9lTDKa_sessionRow:hover {
+html[data-hdd-skin] ._2H3hWW_panelRow:hover,
+html[data-hdd-skin] ._9lTDKa_sessionRow:hover {
   background: rgba(103, 139, 255, .07) !important;
 }
-html[data-fairy-skin] ._9lTDKa_sessionRow[aria-current="true"],
-html[data-fairy-skin] ._9lTDKa_sessionRow[data-active="true"] {
+html[data-hdd-skin] ._9lTDKa_sessionRow[aria-current="true"],
+html[data-hdd-skin] ._9lTDKa_sessionRow[data-active="true"] {
   border: 1px solid rgba(103, 139, 255, .28) !important;
   background: rgba(41, 70, 145, .18) !important;
 }
-html[data-fairy-skin] .cJsG2q_bubble {
+html[data-hdd-skin] .cJsG2q_bubble {
   background: linear-gradient(135deg, #1d5da6, #15457c) !important;
   border: 1px solid rgba(110, 168, 255, .32) !important;
   border-radius: 18px !important;
@@ -470,67 +481,41 @@ html[data-fairy-skin] .cJsG2q_bubble {
   box-shadow: 0 8px 24px rgba(0, 0, 0, .28), inset 0 1px 0 rgba(255, 255, 255, .10) !important;
   font-size: 15px !important;
 }
-html[data-fairy-skin] .cJsG2q_contextRow {
+html[data-hdd-skin] .cJsG2q_contextRow {
   color: #b9cdf0 !important;
   font-size: 14px !important;
   opacity: .85;
 }
-html[data-fairy-skin] .cJsG2q_contextRow svg { color: #a8c4ff !important; }
-html[data-fairy-skin] .V4vHZW_column {
+html[data-hdd-skin] .cJsG2q_contextRow svg { color: #a8c4ff !important; }
+html[data-hdd-skin] .V4vHZW_column {
   color: #eaf2ff !important;
   font-weight: 550;
   /* A hair of soft edge: rounds the terminals without smearing the glyphs. */
   text-shadow: 0 0 .5px rgba(234, 242, 255, .60);
   letter-spacing: .008em;
 }
-html[data-fairy-skin] :is(.cJsG2q_bubble, .RlGAzG_input, ._3GBCTG_thinkBody) { font-weight: 500; }
-html[data-fairy-skin] :is(.V4vHZW_column h1, .V4vHZW_column h2, .V4vHZW_column h3, .V4vHZW_column strong, .V4vHZW_column b) { font-weight: 700; }
-html[data-fairy-skin] .V4vHZW_column :is(p, li) { color: #eaf2ff !important; }
-html[data-fairy-skin] ._3GBCTG_title,
-html[data-fairy-skin] ._3GBCTG_summaryText { color: #a9c1e8 !important; }
+html[data-hdd-skin] :is(.cJsG2q_bubble, .RlGAzG_input, ._3GBCTG_thinkBody) { font-weight: 500; }
+html[data-hdd-skin] :is(.V4vHZW_column h1, .V4vHZW_column h2, .V4vHZW_column h3, .V4vHZW_column strong, .V4vHZW_column b) { font-weight: 700; }
+html[data-hdd-skin] .V4vHZW_column :is(p, li) { color: #eaf2ff !important; }
+html[data-hdd-skin] ._3GBCTG_title,
+html[data-hdd-skin] ._3GBCTG_summaryText { color: #a9c1e8 !important; }
 /*
- * The composer rides on the same grey rail as the left column: the art stops
- * at the message area, the rail takes over underneath, and the glass capsule
- * floats inside it with the same inset as the rail's other cards. The seam is
- * a single dark hairline rather than a long fade, so the boundary reads as a
- * deliberate frame instead of a gradient smudge.
+ * The composer seat is not a surface. It used to paint the grey rail it rides
+ * on; it is now transparent in every state, so the artwork passes underneath
+ * the capsule and the input area has no foot of its own. The capsule keeps its
+ * own glass — see the composer stylesheet at the end of this file.
  */
-html[data-fairy-skin][data-hdd-band="on"] .an3WzG_composerSeat,
-html[data-fairy-skin][data-hdd-band="on"] [data-composer-seat] {
-  background: linear-gradient(180deg, #4a4f57 0%, #3b4048 100%) !important;
-  box-shadow: none !important;
-}
-
-/*
- * Reserve the voice card's column on the capsule itself. The wrapper around it
- * is nested, so neither the seat's padding nor a margin on that wrapper ever
- * reached the capsule — which is why the card kept sitting on top of the send
- * button. 144px = 124 card + 10 rim + 10 of air.
- */
-/*
- * Same surface for whichever composer component is mounted. The hash in the
- * class name changes between shell builds, and the new-session screen can mount
- * its own composer element; matching the stable suffix keeps both screens on
- * one treatment instead of one grey band and one bare strip.
- */
-html[data-fairy-skin][data-hdd-band="on"] [class*="_composerSeat"],
-html[data-fairy-skin][data-hdd-band="on"] [data-composer-seat],
-html[data-fairy-skin][data-hdd-band="on"] [class*="_composerStack"] {
-  background: linear-gradient(180deg, #4a4f57 0%, #3b4048 100%) !important;
-  box-shadow: none !important;
-}
-
 /*
  * New-session screen: drop whatever width cap the app puts on its hero
  * composer, and nothing else. No forced width, no margins — the capsule then
  * fills exactly the space the chat screen gives it, which is the parity asked
  * for. Forcing width here is what broke the layout earlier.
  */
-html[data-fairy-skin] :is(.V4vHZW_root[data-phase="hero"], .V4vHZW_frame[data-content-phase="hero"]) .an3WzG_composerSeat [class*="_card"] {
+html[data-hdd-skin] :is(.V4vHZW_root[data-phase="hero"], .V4vHZW_frame[data-content-phase="hero"]) .an3WzG_composerSeat [class*="_card"] {
   max-width: none !important;
 }
 /* Any trailing spacer inside the seat loses its own margins too. */
-html[data-fairy-skin] .an3WzG_composerSeat > :last-child {
+html[data-hdd-skin] .an3WzG_composerSeat > :last-child {
   margin-top: 2px !important;
   margin-bottom: 0 !important;
   padding-bottom: 0 !important;
@@ -541,10 +526,10 @@ html[data-fairy-skin] .an3WzG_composerSeat > :last-child {
  * at the bottom of the column instead — the seat keeps its own 32px hero
  * padding — and keep the hero copy clear of the input.
  */
-html[data-fairy-skin] :is(.V4vHZW_root[data-phase="hero"], .V4vHZW_frame[data-content-phase="hero"]) .V4vHZW_scroll {
+html[data-hdd-skin] :is(.V4vHZW_root[data-phase="hero"], .V4vHZW_frame[data-content-phase="hero"]) .V4vHZW_scroll {
   justify-content: flex-start;
 }
-html[data-fairy-skin] :is(.V4vHZW_root[data-phase="hero"], .V4vHZW_frame[data-content-phase="hero"]) .an3WzG_composerSeat {
+html[data-hdd-skin] :is(.V4vHZW_root[data-phase="hero"], .V4vHZW_frame[data-content-phase="hero"]) .an3WzG_composerSeat {
   margin-top: auto;
 }
 /* Hero composer width is left to the app: forcing 100% on its wrapper crushed
@@ -556,10 +541,10 @@ html[data-fairy-skin] :is(.V4vHZW_root[data-phase="hero"], .V4vHZW_frame[data-co
  * from the seam, and each edge facing the conversation carries a short
  * gradient so the surface turns away instead of stopping dead.
  */
-html[data-fairy-skin] .BynINW_sidebarCol {
-  --fairy-frame-radius: 16px;
+html[data-hdd-skin] .BynINW_sidebarCol {
+  --hdd-frame-radius: 16px;
   position: relative;
-  border-radius: var(--fairy-frame-radius) !important;
+  border-radius: var(--hdd-frame-radius) !important;
   background-clip: padding-box !important;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, .13),
@@ -571,12 +556,12 @@ html[data-fairy-skin] .BynINW_sidebarCol {
 /* The rail is flush with the window edge, so its corners go back to square:
    rounding them only ate into the frame and left slivers of backdrop showing
    at the top-left and bottom-left. The composer keeps its radius. */
-html[data-fairy-skin] .BynINW_sidebarCol {
+html[data-hdd-skin] .BynINW_sidebarCol {
   border-radius: 0 !important;
 }
 /* The composer's top seam: the picture hands over to the rail through a short
    falloff, and the rail's own top rim carries the highlight. */
-html[data-fairy-skin] .RlGAzG_card {
+html[data-hdd-skin] .RlGAzG_card {
   background: linear-gradient(180deg, rgba(10, 20, 40, .96), rgba(6, 12, 24, .97)) !important;
   border: 1px solid rgba(102, 138, 255, .27) !important;
   border-radius: 18px !important;
@@ -585,7 +570,7 @@ html[data-fairy-skin] .RlGAzG_card {
     inset 0 1px 0 rgba(255, 255, 255, .06),
     0 0 38px rgba(60, 95, 255, .10) !important;
 }
-html[data-fairy-skin] .RlGAzG_card:focus-within {
+html[data-hdd-skin] .RlGAzG_card:focus-within {
   border-color: rgba(120, 154, 255, .62) !important;
   box-shadow:
     0 24px 80px rgba(0, 0, 0, .62),
@@ -595,14 +580,14 @@ html[data-fairy-skin] .RlGAzG_card:focus-within {
 /* Composer frame. The input bar's CSS-module hash moved to GRgSLq; both the
    current and the older RlGAzG names are carried so the frame survives a shell
    rebuild. Shape: a soft glass capsule, one hairline, no heavy outline. */
-html[data-fairy-skin] :is(.GRgSLq_card, .RlGAzG_card) {
+html[data-hdd-skin] :is(.GRgSLq_card, .RlGAzG_card) {
   position: relative;
   /* No overflow:hidden and no isolation here: both trap the composer's own
      popovers (the + menu is a fixed-position layer anchored to this card).
      The liquid layer below is kept inside the radius on its own. */
   overflow: visible;
   background:
-    var(--fairy-glass-grain) 0 0 / 46px 46px repeat,
+    var(--hdd-glass-grain) 0 0 / 46px 46px repeat,
     linear-gradient(180deg, rgba(255, 255, 255, .12) 0%, rgba(255, 255, 255, .03) 22%, rgba(255, 255, 255, 0) 46%),
     linear-gradient(160deg, rgba(57, 120, 237, .44) 0%, rgba(25, 52, 153, .54) 52%, rgba(9, 18, 52, .66) 100%) !important;
   /* No backdrop blur: it re-samples everything behind the capsule, and during a
@@ -622,15 +607,15 @@ html[data-fairy-skin] :is(.GRgSLq_card, .RlGAzG_card) {
   transition: border-color 200ms ease, box-shadow 240ms ease;
 }
 /* Same liquid as the rail cards, so the capsule and the sidebar are visibly
-   one material. --fairy-liquid-* is shared, so dimming it once dims both. */
+   one material. --hdd-liquid-* is shared, so dimming it once dims both. */
 /*
  * The "+" menu (input-trigger) is rendered inside the conversation tree and is
  * clipped by the conversation frame and its scroller. A :has() rule could not
  * tell "menu mounted" from "menu actually open" — it stayed on and killed
  * scrolling — so the clip is released only while the guard in apply() has
- * measured a real popover on screen and set data-fairy-menu-open.
+ * measured a real popover on screen and set data-hdd-menu-open.
  */
-html[data-fairy-skin][data-fairy-menu-open] [class*="_root"][data-phase="active"] {
+html[data-hdd-skin][data-hdd-menu-open] [class*="_root"][data-phase="active"] {
   overflow: visible !important;
 }
 /*
@@ -640,15 +625,15 @@ html[data-fairy-skin][data-fairy-menu-open] [class*="_root"][data-phase="active"
  * nothing able to reach it. They belong to the popover treatment, so they now
  * follow it.
  */
-html[data-fairy-skin][data-fairy-menu-open] [class*="_composerStack"],
-html[data-fairy-skin][data-fairy-menu-open] [class*="_composerSeat"] {
+html[data-hdd-skin][data-hdd-menu-open] [class*="_composerStack"],
+html[data-hdd-skin][data-hdd-menu-open] [class*="_composerSeat"] {
   overflow: visible !important;
 }
 /* The measured clipper: the popover's top edge lands exactly on the scroll
    body's frame, so that frame clips it. The 11px padding replaces the
    scrollbar gutter (our own ::-webkit-scrollbar width) that disappears with
    the overflow, so nothing changes width while the menu is open. */
-html[data-fairy-skin][data-fairy-menu-open] [class*="_scrollBody"] {
+html[data-hdd-skin][data-hdd-menu-open] [class*="_scrollBody"] {
   overflow: visible !important;
   padding-right: 11px !important;
 }
@@ -658,7 +643,7 @@ html[data-fairy-skin][data-fairy-menu-open] [class*="_scrollBody"] {
  * the card — an ask-me card opened mid-sentence. The shell already knows how to
  * size these; the skin only has to stop clipping the popover of the "+" menu.
  */
-html[data-fairy-skin] :is(.GRgSLq_card, .RlGAzG_card)::before {
+html[data-hdd-skin] :is(.GRgSLq_card, .RlGAzG_card)::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -666,15 +651,15 @@ html[data-fairy-skin] :is(.GRgSLq_card, .RlGAzG_card)::before {
   z-index: -1;
   pointer-events: none;
   background:
-    radial-gradient(42% 58% at 24% 26%, var(--fairy-liquid-1), transparent 72%),
-    radial-gradient(38% 50% at 76% 64%, var(--fairy-liquid-2), transparent 74%),
-    radial-gradient(46% 62% at 52% 88%, var(--fairy-liquid-3), transparent 76%),
-    radial-gradient(26% 34% at 62% 34%, var(--fairy-liquid-4), transparent 78%);
+    radial-gradient(42% 58% at 24% 26%, var(--hdd-liquid-1), transparent 72%),
+    radial-gradient(38% 50% at 76% 64%, var(--hdd-liquid-2), transparent 74%),
+    radial-gradient(46% 62% at 52% 88%, var(--hdd-liquid-3), transparent 76%),
+    radial-gradient(26% 34% at 62% 34%, var(--hdd-liquid-4), transparent 78%);
   /* Static: an animated layer here keeps the compositor busy for no visible
      gain, since the capsule is mostly covered by its own text and toolbar. */
   animation: none !important;
 }
-html[data-fairy-skin] :is(.GRgSLq_card, .RlGAzG_card):focus-within {
+html[data-hdd-skin] :is(.GRgSLq_card, .RlGAzG_card):focus-within {
   border-color: rgba(160, 192, 255, .34) !important;
   border-top-color: rgba(236, 246, 255, .40) !important;
   box-shadow:
@@ -684,17 +669,17 @@ html[data-fairy-skin] :is(.GRgSLq_card, .RlGAzG_card):focus-within {
     0 0 0 1px rgba(124, 158, 255, .18),
     0 0 40px rgba(96, 138, 255, .16) !important;
 }
-html[data-fairy-skin] :is(.GRgSLq_input, .RlGAzG_input) { color: #e7efff !important; caret-color: #7d9cff !important; }
-html[data-fairy-skin] :is(.GRgSLq_placeholder, .RlGAzG_placeholder) { color: #7389ad !important; }
+html[data-hdd-skin] :is(.GRgSLq_input, .RlGAzG_input) { color: #e7efff !important; caret-color: #7d9cff !important; }
+html[data-hdd-skin] :is(.GRgSLq_placeholder, .RlGAzG_placeholder) { color: #7389ad !important; }
 /* Round controls inside the capsule. */
-html[data-fairy-skin] :is(.GRgSLq_add, .GRgSLq_primary, .RlGAzG_add) {
+html[data-hdd-skin] :is(.GRgSLq_add, .GRgSLq_primary, .RlGAzG_add) {
   border-radius: 50% !important;
   corner-shape: round;
 }
-html[data-fairy-skin] .RlGAzG_placeholder { color: #6f84aa !important; }
-html[data-fairy-skin] .RlGAzG_add { color: #93a8cd !important; }
-html[data-fairy-skin] ._2WTFBq_bar { background: rgba(103, 139, 255, .12) !important; }
-html[data-fairy-skin] ::selection { background: rgba(103, 139, 255, .30); color: #f4f8ff; }
+html[data-hdd-skin] .RlGAzG_placeholder { color: #6f84aa !important; }
+html[data-hdd-skin] .RlGAzG_add { color: #93a8cd !important; }
+html[data-hdd-skin] ._2WTFBq_bar { background: rgba(103, 139, 255, .12) !important; }
+html[data-hdd-skin] ::selection { background: rgba(103, 139, 255, .30); color: #f4f8ff; }
 /*
  * Scrollbars sit on top of the artwork now, so the old solid track (#060a12)
  * read as a painted stripe running the full height of the panel and collided
@@ -703,86 +688,86 @@ html[data-fairy-skin] ::selection { background: rgba(103, 139, 255, .30); color:
  * is what does the insetting), and the gutter is reserved so the bar appearing
  * never nudges the message column sideways.
  */
-html[data-fairy-skin] ::-webkit-scrollbar { width: 11px; height: 11px; }
-html[data-fairy-skin] ::-webkit-scrollbar-track { background: transparent; }
-html[data-fairy-skin] ::-webkit-scrollbar-thumb {
+html[data-hdd-skin] ::-webkit-scrollbar { width: 11px; height: 11px; }
+html[data-hdd-skin] ::-webkit-scrollbar-track { background: transparent; }
+html[data-hdd-skin] ::-webkit-scrollbar-thumb {
   background: linear-gradient(180deg, rgba(122, 152, 232, .46), rgba(74, 104, 190, .34));
   border: 3px solid transparent;
   border-radius: 999px;
   background-clip: padding-box;
   min-height: 40px;
 }
-html[data-fairy-skin] ::-webkit-scrollbar-thumb:hover {
+html[data-hdd-skin] ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(180deg, rgba(152, 180, 255, .66), rgba(96, 128, 220, .50));
   background-clip: padding-box;
 }
-html[data-fairy-skin] ::-webkit-scrollbar-thumb:active {
+html[data-hdd-skin] ::-webkit-scrollbar-thumb:active {
   background: linear-gradient(180deg, rgba(178, 200, 255, .78), rgba(112, 146, 236, .62));
   background-clip: padding-box;
 }
-html[data-fairy-skin] ::-webkit-scrollbar-corner { background: transparent; }
+html[data-hdd-skin] ::-webkit-scrollbar-corner { background: transparent; }
 /* Reserve the gutter only where the conversation list lives, so the column does
    not jump a few pixels the moment a long answer makes the bar appear. */
-html[data-fairy-skin] body:has(.V4vHZW_root) :is(.V4vHZW_scroll, .V4vHZW_scroll) {
+html[data-hdd-skin] body:has(.V4vHZW_root) :is(.V4vHZW_scroll, .V4vHZW_scroll) {
   scrollbar-gutter: stable;
 }
 
 /* The console chrome shares the nameplate family at semibold. Body copy and
    conversation text keep their regular weight so long passages stay readable. */
-html[data-fairy-skin] :is(button, [role="button"], [role="tab"], summary) {
-  font-family: var(--fairy-display-font);
+html[data-hdd-skin] :is(button, [role="button"], [role="tab"], summary) {
+  font-family: var(--hdd-display-font);
   font-weight: 600;
 }
-html[data-fairy-skin] :is(._2H3hWW_newSession, ._9lTDKa_sessionRow, ._2H3hWW_panelRow) {
+html[data-hdd-skin] :is(._2H3hWW_newSession, ._9lTDKa_sessionRow, ._2H3hWW_panelRow) {
   font-weight: 600;
 }
 
 /* Heavy rounded region outlines from the reference. The sidebar brand cell
    and the conversation trajectory stay unoutlined. */
-html[data-fairy-skin] .BynINW_sidebarCol {
+html[data-hdd-skin] .BynINW_sidebarCol {
   border-right-width: 2px !important;
-  border-right-color: var(--fairy-line) !important;
+  border-right-color: var(--hdd-line) !important;
 }
-html[data-fairy-skin] ._2H3hWW_newSession {
+html[data-hdd-skin] ._2H3hWW_newSession {
   border-width: 2px !important;
   border-radius: 12px !important;
-  border-color: var(--fairy-line) !important;
+  border-color: var(--hdd-line) !important;
 }
-html[data-fairy-skin] ._9lTDKa_root {
+html[data-hdd-skin] ._9lTDKa_root {
   border-radius: 16px;
   box-shadow:
-    inset 0 0 0 2px var(--fairy-line),
+    inset 0 0 0 2px var(--hdd-line),
     inset 0 0 0 4px rgba(0, 0, 0, .12);
 }
-html[data-fairy-skin] ._2H3hWW_footArea {
+html[data-hdd-skin] ._2H3hWW_footArea {
   border-top: none !important;
 }
-html[data-fairy-skin] ._2WTFBq_panel {
+html[data-hdd-skin] ._2WTFBq_panel {
   border-radius: 14px;
   box-shadow:
-    inset 0 0 0 2px var(--fairy-line),
+    inset 0 0 0 2px var(--hdd-line),
     inset 0 0 0 4px rgba(0, 0, 0, .10);
 }
-html[data-fairy-skin] .an3WzG_header {
+html[data-hdd-skin] .an3WzG_header {
   border-bottom: none !important;
 }
-html[data-fairy-skin] .an3WzG_tab {
+html[data-hdd-skin] .an3WzG_tab {
   border-radius: 12px !important;
 }
-html[data-fairy-skin] .RlGAzG_card {
+html[data-hdd-skin] .RlGAzG_card {
   border-width: 2px !important;
   border-radius: 22px !important;
-  border-color: var(--fairy-line) !important;
+  border-color: var(--hdd-line) !important;
 }
 
 /* Workspace only — same 2px gray line and rounded treatment as the other
    framed regions, so the sidebar does not use a one-off border style. */
-html[data-fairy-skin] ._9lTDKa_root {
+html[data-hdd-skin] ._9lTDKa_root {
   padding-left: 2px !important;
   padding-right: 2px !important;
   box-shadow: none !important;
 }
-html[data-fairy-skin] ._9lTDKa_listArea {
+html[data-hdd-skin] ._9lTDKa_listArea {
   position: relative;
   margin-right: 0 !important;
   border: none !important;
@@ -792,26 +777,26 @@ html[data-fairy-skin] ._9lTDKa_listArea {
   box-shadow: none !important;
 }
 /* A single 2px line only: no glow, no second inner edge, no double frame. */
-html[data-fairy-skin] ._9lTDKa_listArea::after {
+html[data-hdd-skin] ._9lTDKa_listArea::after {
   content: "";
   position: absolute;
   inset: 0;
   z-index: 20;
   box-sizing: border-box;
-  border: 2px solid var(--fairy-line);
+  border: 2px solid var(--hdd-line);
   border-radius: inherit;
   pointer-events: none;
 }
-html[data-fairy-skin] ._9lTDKa_list :is(button, [role="button"])[aria-current="true"],
-html[data-fairy-skin] ._9lTDKa_list :is(button, [role="button"])[aria-selected="true"],
-html[data-fairy-skin] ._9lTDKa_list :is(button, [role="button"])[data-active="true"] {
+html[data-hdd-skin] ._9lTDKa_list :is(button, [role="button"])[aria-current="true"],
+html[data-hdd-skin] ._9lTDKa_list :is(button, [role="button"])[aria-selected="true"],
+html[data-hdd-skin] ._9lTDKa_list :is(button, [role="button"])[data-active="true"] {
   background: linear-gradient(180deg, rgba(56, 96, 190, .62), rgba(36, 64, 132, .68)) !important;
   border: 1px solid rgba(196, 205, 218, .38) !important;
   border-radius: 9px !important;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06) !important;
 }
 .fs-root .fs-btn {
-  font-family: var(--fairy-display-font);
+  font-family: var(--hdd-display-font);
   font-weight: 700;
 }
 
@@ -833,27 +818,27 @@ html[data-fairy-skin] ._9lTDKa_list :is(button, [role="button"])[data-active="tr
   text-align: left;
 }
 .fs-brand-title {
-  font-family: var(--fairy-display-font);
+  font-family: var(--hdd-display-font);
   font-size: 22px; font-weight: 900; line-height: 1; letter-spacing: .012em;
   color: #f2f7ff;
 }
 .fs-brand-tag {
-  font-family: var(--fairy-display-font);
+  font-family: var(--hdd-display-font);
   font-size: 8px; font-weight: 600; line-height: 1.2; letter-spacing: .12em;
   color: rgba(157, 181, 224, .70); white-space: nowrap;
   text-transform: uppercase;
 }
-html[data-fairy-skin] ._2H3hWW_brandName { height: auto !important; }
+html[data-hdd-skin] ._2H3hWW_brandName { height: auto !important; }
 
-html[data-fairy-skin] ._2H3hWW_brandIdentity {
+html[data-hdd-skin] ._2H3hWW_brandIdentity {
   height: 36px !important;
   overflow: visible !important;
 }
 /* Expanded sidebar: give the Fairy core more presence without changing the row. */
-html[data-fairy-skin] ._2H3hWW_root:not(._2H3hWW_collapsed) ._2H3hWW_brandIdentity {
+html[data-hdd-skin] ._2H3hWW_root:not(._2H3hWW_collapsed) ._2H3hWW_brandIdentity {
   height: 40px !important;
 }
-html[data-fairy-skin] ._2H3hWW_root:not(._2H3hWW_collapsed) ._2H3hWW_brandMark {
+html[data-hdd-skin] ._2H3hWW_root:not(._2H3hWW_collapsed) ._2H3hWW_brandMark {
   width: 38px !important;
   height: 38px !important;
 }
@@ -861,7 +846,7 @@ html[data-fairy-skin] ._2H3hWW_root:not(._2H3hWW_collapsed) ._2H3hWW_brandMark {
 /* The shell owns the two brand single-slots, so the animated core is painted
    into the shipped cell: the whale stays in the tree but is hidden, and the
    core plus its halo replace it. */
-html[data-fairy-skin] ._2H3hWW_brandMark {
+html[data-hdd-skin] ._2H3hWW_brandMark {
   position: relative;
   width: 30px !important; height: 30px !important;
   flex: none;
@@ -874,16 +859,16 @@ html[data-fairy-skin] ._2H3hWW_brandMark {
 }
 /* Only the static core needs a box glow; the live core carries a drop shadow
    that follows its own outline. */
-html[data-fairy-skin] ._2H3hWW_brandMark:not(:has(> .fs-brand-live)) {
+html[data-hdd-skin] ._2H3hWW_brandMark:not(:has(> .fs-brand-live)) {
   box-shadow: 0 0 5px rgba(92, 130, 255, .36);
 }
-html[data-fairy-skin] ._2H3hWW_brandMark > :not(.fs-brand-live) { display: none !important; }
+html[data-hdd-skin] ._2H3hWW_brandMark > :not(.fs-brand-live) { display: none !important; }
 /* The logo row and its brand button clip their overflow, which used to slice
    the halo flat above and below the mark. Open the chain so the glow can fade
    naturally instead of ending on a straight edge. */
-html[data-fairy-skin] ._2H3hWW_root:not(._2H3hWW_collapsed) ._2H3hWW_logoRow,
-html[data-fairy-skin] ._2H3hWW_root:not(._2H3hWW_collapsed) ._2H3hWW_brand,
-html[data-fairy-skin] ._2H3hWW_root:not(._2H3hWW_collapsed) ._2H3hWW_brandIdentity {
+html[data-hdd-skin] ._2H3hWW_root:not(._2H3hWW_collapsed) ._2H3hWW_logoRow,
+html[data-hdd-skin] ._2H3hWW_root:not(._2H3hWW_collapsed) ._2H3hWW_brand,
+html[data-hdd-skin] ._2H3hWW_root:not(._2H3hWW_collapsed) ._2H3hWW_brandIdentity {
   overflow: visible !important;
 }
 /* A drop shadow follows the orb's own alpha, so the halo is a clean circle
@@ -899,18 +884,18 @@ html[data-fairy-skin] ._2H3hWW_root:not(._2H3hWW_collapsed) ._2H3hWW_brandIdenti
 .fs-brand-live .fs-iris-spin { animation: fs-iris-spin 24s linear infinite !important; }
 .fs-brand-live .fs-iris { animation: fs-iris-pulse 8s ease-in-out infinite !important; }
 .fs-brand-live .fs-orb { position: relative; display: block; width: 100%; height: 100%; overflow: visible; }
-html[data-fairy-skin] ._2H3hWW_brandMark.has-live-core {
+html[data-hdd-skin] ._2H3hWW_brandMark.has-live-core {
   background: none !important;
   box-shadow: none !important;
 }
 
 /* Keep the enlarged core winning over the 30px fallback above. */
-html[data-fairy-skin] ._2H3hWW_root:not(._2H3hWW_collapsed) ._2H3hWW_brandMark {
+html[data-hdd-skin] ._2H3hWW_root:not(._2H3hWW_collapsed) ._2H3hWW_brandMark {
   width: 38px !important;
   height: 38px !important;
 }
 
-html[data-fairy-skin] ._2H3hWW_brandName {
+html[data-hdd-skin] ._2H3hWW_brandName {
   display: flex !important;
   flex-direction: column;
   align-items: flex-start;
@@ -918,22 +903,22 @@ html[data-fairy-skin] ._2H3hWW_brandName {
   height: auto !important;
   overflow: visible !important;
 }
-html[data-fairy-skin] ._2H3hWW_brandName > [data-slot="sidebar.brand.name"] { display: none !important; }
-html[data-fairy-skin] ._2H3hWW_brandName::before {
+html[data-hdd-skin] ._2H3hWW_brandName > [data-slot="sidebar.brand.name"] { display: none !important; }
+html[data-hdd-skin] ._2H3hWW_brandName::before {
   content: "Fairy";
-  font-family: var(--fairy-display-font);
+  font-family: var(--hdd-display-font);
   font-size: 22px; font-weight: 900; line-height: 1; letter-spacing: .012em;
   color: #f2f7ff;
 }
-html[data-fairy-skin] ._2H3hWW_brandName::after {
+html[data-hdd-skin] ._2H3hWW_brandName::after {
   content: "空洞深潜系统";
-  font-family: var(--fairy-display-font);
+  font-family: var(--hdd-display-font);
   font-size: 8px; font-weight: 600; line-height: 1.2; letter-spacing: .12em;
   color: rgba(157, 181, 224, .70);
   white-space: nowrap;
 }
 
-html[data-fairy-skin] body:has(.V4vHZW_root[data-phase="hero"]) .an3WzG_headerUtilities { opacity: 0; pointer-events: none; }
+html[data-hdd-skin] body:has(.V4vHZW_root[data-phase="hero"]) .an3WzG_headerUtilities { opacity: 0; pointer-events: none; }
 
 /* ---- HOLLOW DEEP DIVE SYSTEM hero, only in the no-session state ---- */
 .fs-hero {
@@ -941,8 +926,8 @@ html[data-fairy-skin] body:has(.V4vHZW_root[data-phase="hero"]) .an3WzG_headerUt
   /* The stage is glued to the conversation column, not to the window: opening
      the right task panel or collapsing the left sidebar moves it. client.js
      writes these two properties from better-sidebar's [data-dsh-center-col]. */
-  left: var(--fairy-stage-left, var(--dsh-sidebar-width, 280px));
-  right: var(--fairy-stage-right, 0px);
+  left: var(--hdd-stage-left, var(--dsh-sidebar-width, 280px));
+  right: var(--hdd-stage-right, 0px);
   top: var(--dsh-windows-titlebar-height, 0px);
   bottom: 0;
   z-index: 2147482100;
@@ -950,36 +935,36 @@ html[data-fairy-skin] body:has(.V4vHZW_root[data-phase="hero"]) .an3WzG_headerUt
   overflow: hidden;
   pointer-events: none;
 }
-html[data-fairy-skin] body:has(.V4vHZW_root[data-phase="hero"]) .fs-hero { display: block; }
+html[data-hdd-skin] body:has(.V4vHZW_root[data-phase="hero"]) .fs-hero { display: block; }
 /* A real chat keeps the same large core as the new-conversation screen;
    only the caption copy is dropped. The chat viewport is shortened below the
    core instead of replacing it with a second, smaller icon. */
-html[data-fairy-skin] body:has(.V4vHZW_root) .fs-hero {
+html[data-hdd-skin] body:has(.V4vHZW_root) .fs-hero {
   display: block !important;
 }
-html[data-fairy-skin] body:has(.V4vHZW_root) .fs-hero-copy {
+html[data-hdd-skin] body:has(.V4vHZW_root) .fs-hero-copy {
   display: none !important;
 }
 /* A live chat gets a compact core that sits below the session header rather
    than the poster-sized one used on the new-conversation screen. The size is
    proportional to the window, so maximizing or restoring the window scales the
    icon with the console instead of leaving a fixed slab in the middle. */
-html[data-fairy-skin] body:has(.V4vHZW_root) {
-  --fairy-orb-size: clamp(150px, min(19vw, 25vh), 320px);
+html[data-hdd-skin] body:has(.V4vHZW_root) {
+  --hdd-orb-size: clamp(150px, min(19vw, 25vh), 320px);
   /* The header (title row + 对话/轨迹 tabs) is 76px tall by default; start the
      core just under that rule instead of inside it. */
-  --fairy-orb-top: 90px;
+  --hdd-orb-top: 90px;
   /* The chat port starts 72px under the core, so the dissolve happens below
      the icon instead of disappearing behind it. */
-  --fairy-chat-top: calc(var(--fairy-orb-size) + 86px);
-  --fairy-chat-fade: 88px;
+  --hdd-chat-top: calc(var(--hdd-orb-size) + 86px);
+  --hdd-chat-fade: 88px;
 }
 /* The band is a margin on the scrollport instead of padding inside the
    scrolled content: the chat engine measures that content and re-anchors the
    view when it is pushed from the inside. With the port itself shortened, the
    engine sees an ordinary, smaller viewport. */
-html[data-fairy-skin] body:has(.V4vHZW_root) .V4vHZW_scroll {
-  margin-top: var(--fairy-chat-top);
+html[data-hdd-skin] body:has(.V4vHZW_root) .V4vHZW_scroll {
+  margin-top: var(--hdd-chat-top);
 }
 /*
  * The dissolve band is off. It was built for a flat black console; over the
@@ -987,7 +972,7 @@ html[data-fairy-skin] body:has(.V4vHZW_root) .V4vHZW_scroll {
  * the picture runs clean from top to bottom and the core simply floats above
  * it. Restore the old gradient if the flat console ever returns.
  */
-html[data-fairy-skin] body:has(.V4vHZW_root) .V4vHZW_frame::after {
+html[data-hdd-skin] body:has(.V4vHZW_root) .V4vHZW_frame::after {
   content: none;
   display: none;
 }
@@ -996,8 +981,8 @@ html[data-fairy-skin] body:has(.V4vHZW_root) .V4vHZW_frame::after {
    spot. Match readable suffixes so the rules survive the nightly re-hash, and
    let :has() limit the hit to the headline that actually owns the fish — the
    workspace picker beside it stays untouched. */
-html[data-fairy-skin] body:has([data-phase="hero"]) [class*="_fishHitbox"],
-html[data-fairy-skin] body:has([data-phase="hero"]) [class*="_headline"]:has([class*="_fishHitbox"]) {
+html[data-hdd-skin] body:has([data-phase="hero"]) [class*="_fishHitbox"],
+html[data-hdd-skin] body:has([data-phase="hero"]) [class*="_headline"]:has([class*="_fishHitbox"]) {
   display: none !important;
 }
 /* The ambient bloom is a single circle painted by .fs-orb-glow. A gradient
@@ -1007,9 +992,9 @@ html[data-fairy-skin] body:has([data-phase="hero"]) [class*="_headline"]:has([cl
 .fs-orb-glow {
   position: absolute;
   left: 50%;
-  top: calc(var(--fairy-orb-top) + var(--fairy-orb-size) / 2);
-  width: calc(var(--fairy-orb-size) * 3);
-  height: calc(var(--fairy-orb-size) * 3);
+  top: calc(var(--hdd-orb-top) + var(--hdd-orb-size) / 2);
+  width: calc(var(--hdd-orb-size) * 3);
+  height: calc(var(--hdd-orb-size) * 3);
   transform: translate(-50%, -50%);
   border-radius: 50%;
   corner-shape: round;
@@ -1022,8 +1007,8 @@ html[data-fairy-skin] body:has([data-phase="hero"]) [class*="_headline"]:has([cl
 }
 .fs-hero-orb {
   position: absolute;
-  left: 50%; top: var(--fairy-orb-top);
-  width: var(--fairy-orb-size); height: var(--fairy-orb-size);
+  left: 50%; top: var(--hdd-orb-top);
+  width: var(--hdd-orb-size); height: var(--hdd-orb-size);
   transform: translateX(-50%);
   filter: drop-shadow(0 0 30px rgba(78, 150, 255, .72));
 }
@@ -1136,7 +1121,7 @@ html[data-fairy-skin] body:has([data-phase="hero"]) [class*="_headline"]:has([cl
    The reflection below is part of the mark, so it stays legible. */
 .fs-hero-title,
 .fs-hero-reflection {
-  font-family: var(--fairy-display-font);
+  font-family: var(--hdd-display-font);
   font-size: clamp(34px, 4.3vw, 64px);
   font-weight: 900;
   letter-spacing: .004em;
@@ -1203,8 +1188,8 @@ html[data-fairy-skin] body:has([data-phase="hero"]) [class*="_headline"]:has([cl
   /* Same stage as the hero core: centre of the conversation column, not of
      the window, so the compact chat core tracks the right task panel too. */
   left: calc(
-    var(--fairy-stage-left, var(--dsh-sidebar-width, 280px)) +
-    (100vw - var(--fairy-stage-left, var(--dsh-sidebar-width, 280px)) - var(--fairy-stage-right, 0px)) / 2
+    var(--hdd-stage-left, var(--dsh-sidebar-width, 280px)) +
+    (100vw - var(--hdd-stage-left, var(--dsh-sidebar-width, 280px)) - var(--hdd-stage-right, 0px)) / 2
   );
   top: calc(var(--dsh-windows-titlebar-height, 0px) + 8px);
   width: 32px; height: 32px;
@@ -1214,7 +1199,7 @@ html[data-fairy-skin] body:has([data-phase="hero"]) [class*="_headline"]:has([cl
   pointer-events: none;
   filter: drop-shadow(0 0 8px rgba(88, 126, 255, .55));
 }
-html[data-fairy-skin] body:has(.V4vHZW_root) .fs-chat-orb {
+html[data-hdd-skin] body:has(.V4vHZW_root) .fs-chat-orb {
   display: block;
 }
 .fs-chat-orb .fs-orb { width: 100%; height: 100%; }
@@ -1298,7 +1283,7 @@ html[data-fairy-skin] body:has(.V4vHZW_root) .fs-chat-orb {
   .fs-hero-reflection { mask-image: linear-gradient(to bottom, rgba(0, 0, 0, .9), rgba(0, 0, 0, .42) 26%, transparent 58%); -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, .9), rgba(0, 0, 0, .42) 26%, transparent 58%); }
 }
 @media (max-width: 860px) {
-  :root[data-fairy-skin] { --fairy-orb-size: 120px; --fairy-orb-top: 38px; }
+  :root[data-hdd-skin] { --hdd-orb-size: 120px; --hdd-orb-top: 38px; }
   .fs-hero-copy { top: 60%; width: 94%; }
   .fs-hero-title,
   .fs-hero-reflection { font-size: clamp(22px, 4.6vw, 34px); }
@@ -1313,12 +1298,12 @@ html[data-fairy-skin] body:has(.V4vHZW_root) .fs-chat-orb {
     animation: none !important;
   }
   /* The rail still keeps its soft light, it just stops moving. */
-  html[data-fairy-skin] .BynINW_sidebarCol :is(
+  html[data-hdd-skin] .BynINW_sidebarCol :is(
     .wtg9ga_newSession, ._2H3hWW_newSession,
     .wtg9ga_panelList, ._2H3hWW_panelList,
     .GAkraW_listArea, ._9lTDKa_listArea
   )::before,
-  html[data-fairy-skin] .fs-rail-stats::before {
+  html[data-hdd-skin] .fs-rail-stats::before {
     animation: none !important;
   }
   .fs-cinema { transition-duration: 1ms !important; }
@@ -1329,13 +1314,13 @@ html[data-fairy-skin] body:has(.V4vHZW_root) .fs-chat-orb {
    workspace pane. Layers, top to bottom: frosted grain, specular wash,
    diagonal sheen, tinted body. Backdrop blur supplies the milkiness.
    ===================================================================== */
-html[data-fairy-skin] {
-  --fairy-glass-grain: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAD3klEQVR42gXBWyhzcQAA8P///M9t56y8efPqRQkP8qI2OoVEkhIpHlxePHmwM1kSc87cNdawnYXtQSSpzSIvynUzm4Ncm3WYYy57+/icj+/3Q3a7nZ6bm0PZ2dmkIAg/ubm55NLSEsmy7L/FxUU8IyPjd3l5WZ+Tk/PX7XaTWVlZlNfrJViWxYeGhnAQCoWA2WxGl5eXOp7n9Y+Pj4TdbtfJskxbrVbm+vqaMplMTDgcpkRRJFOpFBQEgbi4uKBtNhtAmZmZutraWrCysvKvtbX1y+FwUCUlJX8DgcB3S0sLXF9fB2VlZVCW5W+O4+Dc3BxsbGzUgsEgbTQaNXB5eclaLBZwfHxMORwOLJVKIbvdTsuyzPb19ZHxeBxOTk6S5+fnQBRF/dvbG87zPDo7OyPdbjeD8vPzteLiYmxrawtVVFRoOzs7uNFoBF6v96u6uhrs7+/TBoPh8+DggKisrIRra2taW1sbsb29rZWWlmognU5jw8PD6OPjAw0MDGDpdJoeGBhg4vE45Xa7YSKRABaLBR4dHdGCIKCHhwd8ampKl0wmcafTiSEcx2FtbS0RDAaJ5uZmNDo6qtXV1WmSJGlVVVVEIBAAJSUlP8FgEDQ0NBDb29taYWEh8Pl8qKamhoSqquocDgeoqKj4EwqFCI7jvt1ut667u/vT5/MBjuNwr9erVVZWkicnJz95eXmk3++HTU1NXx6PhwAzMzMwkUjoeZ6nXl9fgSRJTDweJ10uF3h/f4e9vb0wnU5DQRDIu7s70uVyUYqiULOzs1BVVT14fn4Gw8PDunA4TPE8jyKRCCVJEpNMJnGTyUTc3NxgkiQhVVWx0dFRRlEUamhoiHh4eGAEQUDA4/GQsiyjiYkJ9Pb2RgwODmKnp6fU2NgYCIVCeH9/P1QUhRJFESUSCdLj8dDJZJIZGRlhPz4+KHB7ewvNZjP+/v4ORFHU3d/f4/Pz8+D09JScnp5Gh4eHelEUUTQa1ff09DCRSISyWCzMy8sL4/F49GB8fBzKsoxmZmbws7Mz1mQy6Z+enmiz2YxdXFzgY2NjtKqqtCRJ+lgsRlqtVphIJNiJiQlMURQKyrLMLC0taV1dXWh1dRVxHPe9traGysvL/ywvL2P19fXI5/P9dHZ20gsLC5/FxcUwEoloBQUF5O7uLgRTU1P6q6sriud5FAqFSLPZjL28vBB9fX1UNBqlnU4noygK5XK52HA4rLdarZSqqrTNZmNTqRQDY7EYvbe3BwwGg7a5uUlwHPe9srKCd3R0aBsbG6ioqOh3b2/vu6qq6tfv95M5OTnY+vo6aG9vB1tbW1//AedZANPwv9nHAAAAAElFTkSuQmCC");
+html[data-hdd-skin] {
+  --hdd-glass-grain: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAD3klEQVR42gXBWyhzcQAA8P///M9t56y8efPqRQkP8qI2OoVEkhIpHlxePHmwM1kSc87cNdawnYXtQSSpzSIvynUzm4Ncm3WYYy57+/icj+/3Q3a7nZ6bm0PZ2dmkIAg/ubm55NLSEsmy7L/FxUU8IyPjd3l5WZ+Tk/PX7XaTWVlZlNfrJViWxYeGhnAQCoWA2WxGl5eXOp7n9Y+Pj4TdbtfJskxbrVbm+vqaMplMTDgcpkRRJFOpFBQEgbi4uKBtNhtAmZmZutraWrCysvKvtbX1y+FwUCUlJX8DgcB3S0sLXF9fB2VlZVCW5W+O4+Dc3BxsbGzUgsEgbTQaNXB5eclaLBZwfHxMORwOLJVKIbvdTsuyzPb19ZHxeBxOTk6S5+fnQBRF/dvbG87zPDo7OyPdbjeD8vPzteLiYmxrawtVVFRoOzs7uNFoBF6v96u6uhrs7+/TBoPh8+DggKisrIRra2taW1sbsb29rZWWlmognU5jw8PD6OPjAw0MDGDpdJoeGBhg4vE45Xa7YSKRABaLBR4dHdGCIKCHhwd8ampKl0wmcafTiSEcx2FtbS0RDAaJ5uZmNDo6qtXV1WmSJGlVVVVEIBAAJSUlP8FgEDQ0NBDb29taYWEh8Pl8qKamhoSqquocDgeoqKj4EwqFCI7jvt1ut667u/vT5/MBjuNwr9erVVZWkicnJz95eXmk3++HTU1NXx6PhwAzMzMwkUjoeZ6nXl9fgSRJTDweJ10uF3h/f4e9vb0wnU5DQRDIu7s70uVyUYqiULOzs1BVVT14fn4Gw8PDunA4TPE8jyKRCCVJEpNMJnGTyUTc3NxgkiQhVVWx0dFRRlEUamhoiHh4eGAEQUDA4/GQsiyjiYkJ9Pb2RgwODmKnp6fU2NgYCIVCeH9/P1QUhRJFESUSCdLj8dDJZJIZGRlhPz4+KHB7ewvNZjP+/v4ORFHU3d/f4/Pz8+D09JScnp5Gh4eHelEUUTQa1ff09DCRSISyWCzMy8sL4/F49GB8fBzKsoxmZmbws7Mz1mQy6Z+enmiz2YxdXFzgY2NjtKqqtCRJ+lgsRlqtVphIJNiJiQlMURQKyrLMLC0taV1dXWh1dRVxHPe9traGysvL/ywvL2P19fXI5/P9dHZ20gsLC5/FxcUwEoloBQUF5O7uLgRTU1P6q6sriud5FAqFSLPZjL28vBB9fX1UNBqlnU4noygK5XK52HA4rLdarZSqqrTNZmNTqRQDY7EYvbe3BwwGg7a5uUlwHPe9srKCd3R0aBsbG6ioqOh3b2/vu6qq6tfv95M5OTnY+vo6aG9vB1tbW1//AedZANPwv9nHAAAAAElFTkSuQmCC");
 }
-html[data-fairy-skin] :is(.wtg9ga_newSession, ._2H3hWW_newSession) {
+html[data-hdd-skin] :is(.wtg9ga_newSession, ._2H3hWW_newSession) {
   position: relative;
   background:
-    var(--fairy-glass-grain) 0 0 / 46px 46px repeat,
+    var(--hdd-glass-grain) 0 0 / 46px 46px repeat,
     linear-gradient(180deg, rgba(255, 255, 255, .30) 0%, rgba(255, 255, 255, .07) 15%, rgba(255, 255, 255, 0) 36%),
     linear-gradient(104deg, rgba(255, 255, 255, 0) 16%, rgba(226, 238, 255, .16) 24%, rgba(255, 255, 255, 0) 34%),
     linear-gradient(116deg, rgba(180, 208, 255, .20) 0%, rgba(112, 152, 238, .06) 32%, rgba(255, 255, 255, 0) 54%),
@@ -1355,9 +1340,9 @@ html[data-fairy-skin] :is(.wtg9ga_newSession, ._2H3hWW_newSession) {
     0 0 34px rgba(110, 152, 255, .18) !important;
   transition: border-color 200ms ease, box-shadow 260ms ease, background 260ms ease, transform 200ms ease;
 }
-html[data-fairy-skin] :is(.wtg9ga_newSession, ._2H3hWW_newSession):hover {
+html[data-hdd-skin] :is(.wtg9ga_newSession, ._2H3hWW_newSession):hover {
   background:
-    var(--fairy-glass-grain) 0 0 / 46px 46px repeat,
+    var(--hdd-glass-grain) 0 0 / 46px 46px repeat,
     linear-gradient(180deg, rgba(255, 255, 255, .38) 0%, rgba(255, 255, 255, .11) 16%, rgba(255, 255, 255, 0) 38%),
     linear-gradient(104deg, rgba(255, 255, 255, 0) 14%, rgba(238, 246, 255, .24) 24%, rgba(255, 255, 255, 0) 36%),
     linear-gradient(116deg, rgba(198, 220, 255, .26) 0%, rgba(132, 172, 255, .10) 34%, rgba(255, 255, 255, 0) 56%),
@@ -1374,26 +1359,26 @@ html[data-fairy-skin] :is(.wtg9ga_newSession, ._2H3hWW_newSession):hover {
     0 0 44px rgba(126, 168, 255, .26) !important;
   transform: translateY(-1px);
 }
-html[data-fairy-skin] :is(.wtg9ga_newSession, ._2H3hWW_newSession):active {
+html[data-hdd-skin] :is(.wtg9ga_newSession, ._2H3hWW_newSession):active {
   transform: translateY(0);
   box-shadow:
     inset 0 2px 6px rgba(0, 0, 0, .35),
     inset 0 1px 0 rgba(255, 255, 255, .18),
     0 6px 16px rgba(0, 0, 0, .40) !important;
 }
-html[data-fairy-skin] :is(.wtg9ga_newSession, ._2H3hWW_newSession):focus-visible {
+html[data-hdd-skin] :is(.wtg9ga_newSession, ._2H3hWW_newSession):focus-visible {
   outline: 2px solid rgba(150, 186, 255, .55);
   outline-offset: 3px;
 }
 
 /* The four panel entries are one glass slab: the list itself is the pane and
    the rows inside stay clear, with hairlines between them and a soft hover. */
-html[data-fairy-skin] :is(.wtg9ga_panelList, ._2H3hWW_panelList) {
+html[data-hdd-skin] :is(.wtg9ga_panelList, ._2H3hWW_panelList) {
   position: relative;
   padding: 4px !important;
   border-radius: 14px !important;
   background:
-    var(--fairy-glass-grain) 0 0 / 46px 46px repeat,
+    var(--hdd-glass-grain) 0 0 / 46px 46px repeat,
     linear-gradient(180deg, rgba(255, 255, 255, .18) 0%, rgba(255, 255, 255, .04) 16%, rgba(255, 255, 255, 0) 40%),
     linear-gradient(146deg, rgba(168, 198, 255, .13) 0%, rgba(96, 134, 226, .04) 32%, rgba(255, 255, 255, 0) 56%),
     linear-gradient(180deg, rgba(88, 128, 224, .12) 0%, rgba(22, 40, 90, .16) 54%, rgba(6, 12, 28, .22) 100%) !important;
@@ -1409,7 +1394,7 @@ html[data-fairy-skin] :is(.wtg9ga_panelList, ._2H3hWW_panelList) {
     0 0 26px rgba(96, 140, 255, .11) !important;
   overflow: hidden;
 }
-html[data-fairy-skin] :is(.wtg9ga_panelRow, ._2H3hWW_panelRow) {
+html[data-hdd-skin] :is(.wtg9ga_panelRow, ._2H3hWW_panelRow) {
   position: relative;
   margin: 0 !important;
   border: none !important;
@@ -1423,15 +1408,15 @@ html[data-fairy-skin] :is(.wtg9ga_panelRow, ._2H3hWW_panelRow) {
 }
 /* Hairline between every slot in the panel list — the "更多" entry ships inside
    its own anchor wrapper, so sibling-of-row selectors miss it. */
-html[data-fairy-skin] :is(.wtg9ga_panelList, ._2H3hWW_panelList) > :not(:first-child) {
+html[data-hdd-skin] :is(.wtg9ga_panelList, ._2H3hWW_panelList) > :not(:first-child) {
   position: relative;
 }
 /* "更多" can also arrive wrapped in its own anchor, outside the list slot; the
    same hairline is drawn there so the run of four reads continuous. */
-html[data-fairy-skin] :is(.wtg9ga_moreAnchor, ._2H3hWW_moreAnchor) {
+html[data-hdd-skin] :is(.wtg9ga_moreAnchor, ._2H3hWW_moreAnchor) {
   position: relative;
 }
-html[data-fairy-skin] :is(.wtg9ga_moreAnchor, ._2H3hWW_moreAnchor)::before {
+html[data-hdd-skin] :is(.wtg9ga_moreAnchor, ._2H3hWW_moreAnchor)::before {
   content: "";
   position: absolute;
   left: 10px; right: 10px; top: 0;
@@ -1439,7 +1424,7 @@ html[data-fairy-skin] :is(.wtg9ga_moreAnchor, ._2H3hWW_moreAnchor)::before {
   background: linear-gradient(90deg, rgba(200, 222, 255, 0), rgba(200, 222, 255, .14) 18%, rgba(200, 222, 255, .14) 82%, rgba(200, 222, 255, 0));
   pointer-events: none;
 }
-html[data-fairy-skin] :is(.wtg9ga_panelList, ._2H3hWW_panelList) > :not(:first-child)::before {
+html[data-hdd-skin] :is(.wtg9ga_panelList, ._2H3hWW_panelList) > :not(:first-child)::before {
   content: "";
   position: absolute;
   left: 10px; right: 10px; top: 0;
@@ -1447,20 +1432,20 @@ html[data-fairy-skin] :is(.wtg9ga_panelList, ._2H3hWW_panelList) > :not(:first-c
   background: linear-gradient(90deg, rgba(200, 222, 255, 0), rgba(200, 222, 255, .14) 18%, rgba(200, 222, 255, .14) 82%, rgba(200, 222, 255, 0));
   pointer-events: none;
 }
-html[data-fairy-skin] :is(.wtg9ga_panelRow, ._2H3hWW_panelRow):hover {
+html[data-hdd-skin] :is(.wtg9ga_panelRow, ._2H3hWW_panelRow):hover {
   background:
     linear-gradient(180deg, rgba(176, 206, 255, .16) 0%, rgba(104, 144, 234, .06) 100%) !important;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .12) !important;
   transform: none !important;
 }
-html[data-fairy-skin] :is(.wtg9ga_panelRow, ._2H3hWW_panelRow):active {
+html[data-hdd-skin] :is(.wtg9ga_panelRow, ._2H3hWW_panelRow):active {
   background: rgba(90, 128, 220, .14) !important;
   box-shadow: inset 0 2px 6px rgba(0, 0, 0, .28) !important;
 }
 
-html[data-fairy-skin] :is(.GAkraW_listArea, ._9lTDKa_listArea) {
+html[data-hdd-skin] :is(.GAkraW_listArea, ._9lTDKa_listArea) {
   background:
-    var(--fairy-glass-grain) 0 0 / 46px 46px repeat,
+    var(--hdd-glass-grain) 0 0 / 46px 46px repeat,
     linear-gradient(180deg, rgba(255, 255, 255, .18) 0%, rgba(255, 255, 255, .04) 13%, rgba(255, 255, 255, 0) 32%),
     linear-gradient(146deg, rgba(168, 198, 255, .14) 0%, rgba(96, 134, 226, .05) 30%, rgba(255, 255, 255, 0) 56%),
     linear-gradient(180deg, rgba(86, 126, 222, .09) 0%, rgba(22, 40, 90, .14) 52%, rgba(6, 12, 28, .19) 100%) !important;
@@ -1475,7 +1460,7 @@ html[data-fairy-skin] :is(.GAkraW_listArea, ._9lTDKa_listArea) {
     0 0 32px rgba(96, 140, 255, .12) !important;
 }
 /* Hairline: brighter along the top edge, fading down the sides. */
-html[data-fairy-skin] :is(.GAkraW_listArea, ._9lTDKa_listArea)::after {
+html[data-hdd-skin] :is(.GAkraW_listArea, ._9lTDKa_listArea)::after {
   border: 1px solid rgba(196, 220, 255, .16) !important;
   border-top-color: rgba(240, 248, 255, .34) !important;
   border-radius: inherit;
@@ -1484,17 +1469,17 @@ html[data-fairy-skin] :is(.GAkraW_listArea, ._9lTDKa_listArea)::after {
     0 0 22px rgba(96, 140, 255, .07);
 }
 /* Inner surfaces stay clear so the frosted backdrop is what shows. */
-html[data-fairy-skin] :is(.GAkraW_list, .GAkraW_treeBody, .GAkraW_flatList, ._9lTDKa_list) {
+html[data-hdd-skin] :is(.GAkraW_list, .GAkraW_treeBody, .GAkraW_flatList, ._9lTDKa_list) {
   background: transparent !important;
 }
-html[data-fairy-skin] :is(.GAkraW_root, ._9lTDKa_root) {
+html[data-hdd-skin] :is(.GAkraW_root, ._9lTDKa_root) {
   padding-left: 0 !important;
   padding-right: 0 !important;
 }
-html[data-fairy-skin] :is(.wnFoaW_sessionRow, ._9lTDKa_sessionRow) {
+html[data-hdd-skin] :is(.wnFoaW_sessionRow, ._9lTDKa_sessionRow) {
   transition: background 180ms ease, box-shadow 180ms ease;
 }
-html[data-fairy-skin] :is(.wnFoaW_sessionRow, ._9lTDKa_sessionRow):hover {
+html[data-hdd-skin] :is(.wnFoaW_sessionRow, ._9lTDKa_sessionRow):hover {
   background:
     linear-gradient(180deg, rgba(176, 206, 255, .16) 0%, rgba(104, 144, 234, .06) 100%) !important;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .12);
@@ -1505,7 +1490,7 @@ html[data-fairy-skin] :is(.wnFoaW_sessionRow, ._9lTDKa_sessionRow):hover {
    light; every glass card keeps the console's original dark treatment, so the
    frosted look is unchanged — the rail just sits on a pale ground.
    ===================================================================== */
-html[data-fairy-skin] .BynINW_sidebarCol {
+html[data-hdd-skin] .BynINW_sidebarCol {
   --dsw-specific-sidebar-fill: #444952;
   --dsw-alias-bg-layer-1: #4b5058;
   --dsw-alias-bg-layer-2: #3f444c;
@@ -1520,10 +1505,10 @@ html[data-fairy-skin] .BynINW_sidebarCol {
   border-right-color: rgba(0, 0, 0, .55) !important;
   color: #1a2438;
 }
-html[data-fairy-skin] .BynINW_sidebarCol :is(._2H3hWW_brandName, .wtg9ga_brandName)::before {
+html[data-hdd-skin] .BynINW_sidebarCol :is(._2H3hWW_brandName, .wtg9ga_brandName)::before {
   color: #f2f7ff !important;
 }
-html[data-fairy-skin] .BynINW_sidebarCol :is(._2H3hWW_brandName, .wtg9ga_brandName)::after {
+html[data-hdd-skin] .BynINW_sidebarCol :is(._2H3hWW_brandName, .wtg9ga_brandName)::after {
   color: rgba(226, 236, 250, .55) !important;
 }
 /*
@@ -1534,30 +1519,30 @@ html[data-fairy-skin] .BynINW_sidebarCol :is(._2H3hWW_brandName, .wtg9ga_brandNa
  * a generic navy slab. Alphas sit around .5–.7: raise toward .80 for a heavier
  * pane, drop toward .45 for a thinner one.
  */
-html[data-fairy-skin] .BynINW_sidebarCol :is(.wtg9ga_newSession, ._2H3hWW_newSession) {
+html[data-hdd-skin] .BynINW_sidebarCol :is(.wtg9ga_newSession, ._2H3hWW_newSession) {
   background:
-    var(--fairy-glass-grain) 0 0 / 46px 46px repeat,
+    var(--hdd-glass-grain) 0 0 / 46px 46px repeat,
     linear-gradient(180deg, rgba(255, 255, 255, .26) 0%, rgba(255, 255, 255, .06) 15%, rgba(255, 255, 255, 0) 36%),
     linear-gradient(104deg, rgba(255, 255, 255, 0) 16%, rgba(226, 238, 255, .14) 24%, rgba(255, 255, 255, 0) 34%),
     linear-gradient(160deg, rgba(57, 120, 237, .46) 0%, rgba(25, 52, 153, .56) 52%, rgba(9, 18, 52, .68) 100%) !important;
 }
-html[data-fairy-skin] .BynINW_sidebarCol :is(.wtg9ga_newSession, ._2H3hWW_newSession):hover {
+html[data-hdd-skin] .BynINW_sidebarCol :is(.wtg9ga_newSession, ._2H3hWW_newSession):hover {
   background:
-    var(--fairy-glass-grain) 0 0 / 46px 46px repeat,
+    var(--hdd-glass-grain) 0 0 / 46px 46px repeat,
     linear-gradient(180deg, rgba(255, 255, 255, .34) 0%, rgba(255, 255, 255, .09) 16%, rgba(255, 255, 255, 0) 38%),
     linear-gradient(104deg, rgba(255, 255, 255, 0) 14%, rgba(238, 246, 255, .20) 24%, rgba(255, 255, 255, 0) 36%),
     linear-gradient(160deg, rgba(74, 138, 250, .54) 0%, rgba(32, 64, 178, .64) 52%, rgba(11, 22, 60, .74) 100%) !important;
 }
-html[data-fairy-skin] .BynINW_sidebarCol :is(.wtg9ga_panelList, ._2H3hWW_panelList) {
+html[data-hdd-skin] .BynINW_sidebarCol :is(.wtg9ga_panelList, ._2H3hWW_panelList) {
   background:
-    var(--fairy-glass-grain) 0 0 / 46px 46px repeat,
+    var(--hdd-glass-grain) 0 0 / 46px 46px repeat,
     linear-gradient(180deg, rgba(255, 255, 255, .16) 0%, rgba(255, 255, 255, .03) 16%, rgba(255, 255, 255, 0) 40%),
     linear-gradient(146deg, rgba(168, 198, 255, .10) 0%, rgba(96, 134, 226, .03) 32%, rgba(255, 255, 255, 0) 56%),
     linear-gradient(180deg, rgba(48, 104, 224, .42) 0%, rgba(24, 50, 148, .52) 54%, rgba(8, 16, 46, .64) 100%) !important;
 }
-html[data-fairy-skin] .BynINW_sidebarCol :is(.GAkraW_listArea, ._9lTDKa_listArea) {
+html[data-hdd-skin] .BynINW_sidebarCol :is(.GAkraW_listArea, ._9lTDKa_listArea) {
   background:
-    var(--fairy-glass-grain) 0 0 / 46px 46px repeat,
+    var(--hdd-glass-grain) 0 0 / 46px 46px repeat,
     linear-gradient(180deg, rgba(255, 255, 255, .13) 0%, rgba(255, 255, 255, .03) 13%, rgba(255, 255, 255, 0) 32%),
     linear-gradient(150deg, rgba(152, 184, 255, .08) 0%, rgba(92, 130, 222, .03) 30%, rgba(255, 255, 255, 0) 54%),
     linear-gradient(180deg, rgba(44, 98, 216, .40) 0%, rgba(22, 46, 140, .50) 52%, rgba(7, 14, 42, .62) 100%) !important;
@@ -1565,49 +1550,49 @@ html[data-fairy-skin] .BynINW_sidebarCol :is(.GAkraW_listArea, ._9lTDKa_listArea
 /* The list's scroll fade paints var(--dsw-specific-sidebar-fill), which is now
    pale — over the dark glass it drew a light band at the bottom. Fade it into
    the glass tone instead. */
-html[data-fairy-skin] .BynINW_sidebarCol :is(.GAkraW_fade, ._9lTDKa_fade) {
+html[data-hdd-skin] .BynINW_sidebarCol :is(.GAkraW_fade, ._9lTDKa_fade) {
   display: none !important;
 }
 /* Against the pale rail the pane's bottom rim would read as a white shelf;
    keep the light rim on top only and let the base fall away dark. */
-html[data-fairy-skin] .BynINW_sidebarCol :is(.GAkraW_listArea, ._9lTDKa_listArea)::after {
+html[data-hdd-skin] .BynINW_sidebarCol :is(.GAkraW_listArea, ._9lTDKa_listArea)::after {
   border: 1px solid rgba(112, 152, 248, .24) !important;
   border-top-color: rgba(200, 218, 255, .40) !important;
   box-shadow: none !important;
 }
 /* The console's deep inner bottom shadow reads as a black band on a pale rail.
    Replace the three card shadows with a single soft drop. */
-html[data-fairy-skin] .BynINW_sidebarCol :is(.wtg9ga_newSession, ._2H3hWW_newSession) {
+html[data-hdd-skin] .BynINW_sidebarCol :is(.wtg9ga_newSession, ._2H3hWW_newSession) {
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, .34),
     inset 0 -1px 0 rgba(255, 255, 255, .05),
     0 10px 22px rgba(0, 0, 0, .20) !important;
 }
-html[data-fairy-skin] .BynINW_sidebarCol :is(.wtg9ga_panelList, ._2H3hWW_panelList) {
+html[data-hdd-skin] .BynINW_sidebarCol :is(.wtg9ga_panelList, ._2H3hWW_panelList) {
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, .22),
     0 8px 18px rgba(0, 0, 0, .18) !important;
 }
-html[data-fairy-skin] .BynINW_sidebarCol :is(.GAkraW_listArea, ._9lTDKa_listArea) {
+html[data-hdd-skin] .BynINW_sidebarCol :is(.GAkraW_listArea, ._9lTDKa_listArea) {
   /* No drop shadow under the pane: the rail below stays clean. */
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .20) !important;
 }
-html[data-fairy-skin] .BynINW_sidebarCol :is(.wtg9ga_newSession, ._2H3hWW_newSession):hover {
+html[data-hdd-skin] .BynINW_sidebarCol :is(.wtg9ga_newSession, ._2H3hWW_newSession):hover {
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, .42),
     inset 0 -1px 0 rgba(255, 255, 255, .06),
     0 14px 28px rgba(0, 0, 0, .22) !important;
 }
-html[data-fairy-skin] .BynINW_sidebarCol :is(.wtg9ga_newSession, ._2H3hWW_newSession):active {
+html[data-hdd-skin] .BynINW_sidebarCol :is(.wtg9ga_newSession, ._2H3hWW_newSession):active {
   box-shadow:
     inset 0 2px 6px rgba(0, 0, 0, .28),
     inset 0 1px 0 rgba(255, 255, 255, .16),
     0 6px 14px rgba(0, 0, 0, .18) !important;
 }
 /* The dark glass cards re-declare the console's ink for their own subtree. */
-html[data-fairy-skin] .BynINW_sidebarCol :is(.wtg9ga_newSession, ._2H3hWW_newSession),
-html[data-fairy-skin] .BynINW_sidebarCol :is(.wtg9ga_panelList, ._2H3hWW_panelList),
-html[data-fairy-skin] .BynINW_sidebarCol :is(.GAkraW_listArea, ._9lTDKa_listArea) {
+html[data-hdd-skin] .BynINW_sidebarCol :is(.wtg9ga_newSession, ._2H3hWW_newSession),
+html[data-hdd-skin] .BynINW_sidebarCol :is(.wtg9ga_panelList, ._2H3hWW_panelList),
+html[data-hdd-skin] .BynINW_sidebarCol :is(.GAkraW_listArea, ._9lTDKa_listArea) {
   --dsw-alias-label-primary: #e8f0ff;
   --dsw-alias-label-secondary: #b6c8e8;
   --dsw-alias-label-tertiary: #8ea4c6;
@@ -1622,16 +1607,16 @@ html[data-fairy-skin] .BynINW_sidebarCol :is(.GAkraW_listArea, ._9lTDKa_listArea
  * different horizontal margins, so their borders stepped in and out down the
  * rail. A single inset pins all three to the same left and right edge, and the
  * cards are told to take the full remaining width instead of their own.
- * Tune --fairy-rail-inset: 6px reads tighter, 14px roomier.
+ * Tune --hdd-rail-inset: 6px reads tighter, 14px roomier.
  */
-html[data-fairy-skin] .BynINW_sidebarCol {
-  --fairy-rail-inset: 10px;
+html[data-hdd-skin] .BynINW_sidebarCol {
+  --hdd-rail-inset: 10px;
 }
-html[data-fairy-skin] .BynINW_sidebarCol :is(.wtg9ga_newSession, ._2H3hWW_newSession),
-html[data-fairy-skin] .BynINW_sidebarCol :is(.wtg9ga_panelList, ._2H3hWW_panelList),
-html[data-fairy-skin] .BynINW_sidebarCol :is(.GAkraW_listArea, ._9lTDKa_listArea) {
-  margin-left: var(--fairy-rail-inset) !important;
-  margin-right: var(--fairy-rail-inset) !important;
+html[data-hdd-skin] .BynINW_sidebarCol :is(.wtg9ga_newSession, ._2H3hWW_newSession),
+html[data-hdd-skin] .BynINW_sidebarCol :is(.wtg9ga_panelList, ._2H3hWW_panelList),
+html[data-hdd-skin] .BynINW_sidebarCol :is(.GAkraW_listArea, ._9lTDKa_listArea) {
+  margin-left: var(--hdd-rail-inset) !important;
+  margin-right: var(--hdd-rail-inset) !important;
   width: auto !important;
   max-width: none !important;
   min-width: 0 !important;
@@ -1640,7 +1625,7 @@ html[data-fairy-skin] .BynINW_sidebarCol :is(.GAkraW_listArea, ._9lTDKa_listArea
 }
 /* The new-session card is a call to action, so its label rides in the middle;
    the panel and session panes keep their rows flush left. */
-html[data-fairy-skin] .BynINW_sidebarCol :is(.wtg9ga_newSession, ._2H3hWW_newSession) {
+html[data-hdd-skin] .BynINW_sidebarCol :is(.wtg9ga_newSession, ._2H3hWW_newSession) {
   justify-content: center !important;
   text-align: center !important;
 }
@@ -1658,18 +1643,18 @@ html[data-fairy-skin] .BynINW_sidebarCol :is(.wtg9ga_newSession, ._2H3hWW_newSes
    corners. Tune the read with opacity (density), filter blur (softness) and
    animation-duration (speed) — the four surfaces run out of phase on purpose.
    ===================================================================== */
-html[data-fairy-skin] .BynINW_sidebarCol :is(.wtg9ga_newSession, ._2H3hWW_newSession),
-html[data-fairy-skin] .BynINW_sidebarCol :is(.wtg9ga_panelList, ._2H3hWW_panelList),
-html[data-fairy-skin] .BynINW_sidebarCol :is(.GAkraW_listArea, ._9lTDKa_listArea),
-html[data-fairy-skin] .fs-rail-stats {
+html[data-hdd-skin] .BynINW_sidebarCol :is(.wtg9ga_newSession, ._2H3hWW_newSession),
+html[data-hdd-skin] .BynINW_sidebarCol :is(.wtg9ga_panelList, ._2H3hWW_panelList),
+html[data-hdd-skin] .BynINW_sidebarCol :is(.GAkraW_listArea, ._9lTDKa_listArea),
+html[data-hdd-skin] .fs-rail-stats {
   position: relative !important;
   overflow: hidden !important;
   isolation: isolate;
 }
-html[data-fairy-skin] .BynINW_sidebarCol :is(.wtg9ga_newSession, ._2H3hWW_newSession)::before,
-html[data-fairy-skin] .BynINW_sidebarCol :is(.wtg9ga_panelList, ._2H3hWW_panelList)::before,
-html[data-fairy-skin] .BynINW_sidebarCol :is(.GAkraW_listArea, ._9lTDKa_listArea)::before,
-html[data-fairy-skin] .fs-rail-stats::before {
+html[data-hdd-skin] .BynINW_sidebarCol :is(.wtg9ga_newSession, ._2H3hWW_newSession)::before,
+html[data-hdd-skin] .BynINW_sidebarCol :is(.wtg9ga_panelList, ._2H3hWW_panelList)::before,
+html[data-hdd-skin] .BynINW_sidebarCol :is(.GAkraW_listArea, ._9lTDKa_listArea)::before,
+html[data-hdd-skin] .fs-rail-stats::before {
   content: "";
   position: absolute;
   /* Oversized so the drift has room to travel before an edge shows. */
@@ -1689,14 +1674,14 @@ html[data-fairy-skin] .fs-rail-stats::before {
   animation: fs-liquid-drift 26s ease-in-out infinite alternate;
 }
 /* Call to action: the smallest surface, so it runs brightest and quickest. */
-html[data-fairy-skin] .BynINW_sidebarCol :is(.wtg9ga_newSession, ._2H3hWW_newSession)::before {
+html[data-hdd-skin] .BynINW_sidebarCol :is(.wtg9ga_newSession, ._2H3hWW_newSession)::before {
   opacity: .62;
   filter: blur(20px) saturate(135%);
   animation-duration: 24s;
   animation-delay: -5s;
 }
 /* Panel card: mid-size, a touch calmer. */
-html[data-fairy-skin] .BynINW_sidebarCol :is(.wtg9ga_panelList, ._2H3hWW_panelList)::before {
+html[data-hdd-skin] .BynINW_sidebarCol :is(.wtg9ga_panelList, ._2H3hWW_panelList)::before {
   opacity: .46;
   filter: blur(28px) saturate(125%);
   animation-duration: 30s;
@@ -1704,13 +1689,13 @@ html[data-fairy-skin] .BynINW_sidebarCol :is(.wtg9ga_panelList, ._2H3hWW_panelLi
 }
 /* Session pane: the long one. Slowest drift keeps a tall sheet from looking
    like a rolling wallpaper. */
-html[data-fairy-skin] .BynINW_sidebarCol :is(.GAkraW_listArea, ._9lTDKa_listArea)::before {
+html[data-hdd-skin] .BynINW_sidebarCol :is(.GAkraW_listArea, ._9lTDKa_listArea)::before {
   opacity: .40;
   filter: blur(34px) saturate(120%);
   animation-duration: 38s;
   animation-delay: -21s;
 }
-html[data-fairy-skin] .fs-rail-stats::before {
+html[data-hdd-skin] .fs-rail-stats::before {
   opacity: .50;
   filter: blur(22px) saturate(130%);
   animation-duration: 32s;
@@ -1722,11 +1707,11 @@ html[data-fairy-skin] .fs-rail-stats::before {
  * 22-28px backdrop blur, a saturate/brightness pass and a multi-layer shadow.
  * Those are fine on a static frame and ruinous at 60fps while a rail is being
  * dragged, because the whole conversation relayouts underneath them each frame.
- * While html[data-fairy-resizing] is set the glass goes flat: no blur, no
+ * While html[data-hdd-resizing] is set the glass goes flat: no blur, no
  * shadow, no transition, and the core's drop-shadow is dropped too. Everything
  * comes back on pointerup.
  */
-html[data-fairy-skin][data-fairy-resizing] :is(
+html[data-hdd-skin][data-hdd-resizing] :is(
   .wtg9ga_newSession, ._2H3hWW_newSession,
   .wtg9ga_panelList, ._2H3hWW_panelList,
   .GAkraW_listArea, ._9lTDKa_listArea,
@@ -1739,7 +1724,7 @@ html[data-fairy-skin][data-fairy-resizing] :is(
 }
 /* The liquid field is a compositor layer, but a drag relayouts the whole rail
    every frame — park it for the duration instead of feeding it new geometry. */
-html[data-fairy-skin][data-fairy-resizing] :is(
+html[data-hdd-skin][data-hdd-resizing] :is(
   .wtg9ga_newSession, ._2H3hWW_newSession,
   .wtg9ga_panelList, ._2H3hWW_panelList,
   .GAkraW_listArea, ._9lTDKa_listArea,
@@ -1747,10 +1732,10 @@ html[data-fairy-skin][data-fairy-resizing] :is(
 )::before {
   animation: none !important;
 }
-html[data-fairy-skin][data-fairy-resizing] :is(.fs-hero-orb, .fs-chat-orb, .fs-header-orb) {
+html[data-hdd-skin][data-hdd-resizing] :is(.fs-hero-orb, .fs-chat-orb, .fs-header-orb) {
   filter: none !important;
 }
-html[data-fairy-skin][data-fairy-resizing] .V4vHZW_root {
+html[data-hdd-skin][data-hdd-resizing] .V4vHZW_root {
   transition: none !important;
 }
 
@@ -1764,13 +1749,13 @@ html[data-fairy-skin][data-fairy-resizing] .V4vHZW_root {
  * re-rasterised per frame; the drift stops while a rail is being dragged and
  * for prefers-reduced-motion.
  */
-html[data-fairy-skin] {
-  --fairy-liquid-1: rgba(57, 120, 237, .28);
-  --fairy-liquid-2: rgba(66, 133, 232, .20);
-  --fairy-liquid-3: rgba(25, 52, 153, .32);
-  --fairy-liquid-4: rgba(180, 196, 238, .18);
+html[data-hdd-skin] {
+  --hdd-liquid-1: rgba(57, 120, 237, .28);
+  --hdd-liquid-2: rgba(66, 133, 232, .20);
+  --hdd-liquid-3: rgba(25, 52, 153, .32);
+  --hdd-liquid-4: rgba(180, 196, 238, .18);
 }
-html[data-fairy-skin] .BynINW_sidebarCol :is(
+html[data-hdd-skin] .BynINW_sidebarCol :is(
   .wtg9ga_newSession, ._2H3hWW_newSession,
   .wtg9ga_panelList, ._2H3hWW_panelList,
   .GAkraW_listArea, ._9lTDKa_listArea
@@ -1779,7 +1764,7 @@ html[data-fairy-skin] .BynINW_sidebarCol :is(
   isolation: isolate;
   overflow: hidden;
 }
-html[data-fairy-skin] .BynINW_sidebarCol :is(
+html[data-hdd-skin] .BynINW_sidebarCol :is(
   .wtg9ga_newSession, ._2H3hWW_newSession,
   .wtg9ga_panelList, ._2H3hWW_panelList,
   .GAkraW_listArea, ._9lTDKa_listArea
@@ -1790,10 +1775,10 @@ html[data-fairy-skin] .BynINW_sidebarCol :is(
   z-index: -1;
   pointer-events: none;
   background:
-    radial-gradient(42% 58% at 24% 26%, var(--fairy-liquid-1), transparent 72%),
-    radial-gradient(38% 50% at 76% 64%, var(--fairy-liquid-2), transparent 74%),
-    radial-gradient(46% 62% at 52% 88%, var(--fairy-liquid-3), transparent 76%),
-    radial-gradient(26% 34% at 62% 34%, var(--fairy-liquid-4), transparent 78%);
+    radial-gradient(42% 58% at 24% 26%, var(--hdd-liquid-1), transparent 72%),
+    radial-gradient(38% 50% at 76% 64%, var(--hdd-liquid-2), transparent 74%),
+    radial-gradient(46% 62% at 52% 88%, var(--hdd-liquid-3), transparent 76%),
+    radial-gradient(26% 34% at 62% 34%, var(--hdd-liquid-4), transparent 78%);
   animation: fairy-liquid 26s ease-in-out infinite alternate;
   will-change: transform;
 }
@@ -1805,7 +1790,7 @@ html[data-fairy-skin] .BynINW_sidebarCol :is(
 }
 /* Quiet while the rail is being resized, and for anyone who asked the system
    for less motion. */
-html[data-fairy-skin][data-fairy-resizing] .BynINW_sidebarCol :is(
+html[data-hdd-skin][data-hdd-resizing] .BynINW_sidebarCol :is(
   .wtg9ga_newSession, ._2H3hWW_newSession,
   .wtg9ga_panelList, ._2H3hWW_panelList,
   .GAkraW_listArea, ._9lTDKa_listArea
@@ -1813,7 +1798,7 @@ html[data-fairy-skin][data-fairy-resizing] .BynINW_sidebarCol :is(
   animation-play-state: paused;
 }
 @media (prefers-reduced-motion: reduce) {
-  html[data-fairy-skin] .BynINW_sidebarCol :is(
+  html[data-hdd-skin] .BynINW_sidebarCol :is(
     .wtg9ga_newSession, ._2H3hWW_newSession,
     .wtg9ga_panelList, ._2H3hWW_panelList,
     .GAkraW_listArea, ._9lTDKa_listArea
@@ -1842,7 +1827,7 @@ html[data-fairy-skin][data-fairy-resizing] .BynINW_sidebarCol :is(
 }
 /* The blue liquid field would tint the grey; the voice card has none, so the
    balance card goes without as well. */
-html[data-fairy-skin] .fs-rail-stats::before {
+html[data-hdd-skin] .fs-rail-stats::before {
   display: none !important;
 }
 .fs-rs-head {
@@ -2267,12 +2252,12 @@ html[data-fairy-skin] .fs-rail-stats::before {
         const previousLabel = read('--dsw-alias-label-primary')
         const previousSecondary = read('--dsw-alias-label-secondary')
         const root = document.documentElement
-        root.setAttribute('data-fairy-splash-caption', '')
+        root.setAttribute('data-hdd-splash-caption', '')
         body.style.setProperty('--dsw-specific-sidebar-fill', 'transparent', 'important')
         body.style.setProperty('--dsw-alias-label-primary', '#eaf1ff', 'important')
         body.style.setProperty('--dsw-alias-label-secondary', '#c7d6ff', 'important')
         return () => {
-          root.removeAttribute('data-fairy-splash-caption')
+          root.removeAttribute('data-hdd-splash-caption')
           if (previousFill.value) body.style.setProperty('--dsw-specific-sidebar-fill', previousFill.value, previousFill.priority)
           else body.style.removeProperty('--dsw-specific-sidebar-fill')
           if (previousLabel.value) body.style.setProperty('--dsw-alias-label-primary', previousLabel.value, previousLabel.priority)
@@ -2336,9 +2321,9 @@ html[data-fairy-skin] .fs-rail-stats::before {
 
       React.useEffect(() => {
         const root = document.documentElement
-        if (phase === 'done') root.setAttribute('data-fairy-splash-done', '')
-        else root.removeAttribute('data-fairy-splash-done')
-        return () => root.removeAttribute('data-fairy-splash-done')
+        if (phase === 'done') root.setAttribute('data-hdd-splash-done', '')
+        else root.removeAttribute('data-hdd-splash-done')
+        return () => root.removeAttribute('data-hdd-splash-done')
       }, [phase])
 
       React.useEffect(() => {
@@ -2528,7 +2513,7 @@ html[data-fairy-skin] .fs-rail-stats::before {
 
         effect(() => {
           const style = document.createElement('style')
-          style.setAttribute('data-fairy-splash', '')
+          style.setAttribute('data-hdd-splash', '')
           let applied = ''
           const paint = () => {
             refreshSkinIndex()
@@ -2544,10 +2529,10 @@ html[data-fairy-skin] .fs-rail-stats::before {
             window.clearInterval(timer)
             style.remove()
           }
-        }, 'fairy-splash: skin stylesheet')
+        }, 'hdd: skin stylesheet')
 
         effect(
-          () => locale && locale.register('fairy-splash', {
+          () => locale && locale.register('dsh-hdd', {
             zh: {
               greetingMorning: '早安，主人。H.D.D. 系统已就绪，Fairy 随时听你差遣。',
               greetingNoon: '午安，主人。H.D.D. 系统已就绪，Fairy 随时听你差遣。',
@@ -2577,17 +2562,17 @@ html[data-fairy-skin] .fs-rail-stats::before {
               replay: 'Replay boot animation',
             },
           }),
-          'fairy-splash: copy',
+          'hdd: copy',
         )
 
-        const t = locale ? locale.bind('fairy-splash') : ((key) => key)
+        const t = locale ? locale.bind('dsh-hdd') : ((key) => key)
 
         effect(() => {
           if (!document.body) return undefined
           const root = document.documentElement
           const body = document.body
           const hadDark = body.hasAttribute('data-ds-dark-theme')
-          root.setAttribute('data-fairy-skin', '')
+          root.setAttribute('data-hdd-skin', '')
           body.setAttribute('data-ds-dark-theme', '')
           const keepDark = new MutationObserver(() => {
             if (!body.hasAttribute('data-ds-dark-theme')) body.setAttribute('data-ds-dark-theme', '')
@@ -2595,10 +2580,10 @@ html[data-fairy-skin] .fs-rail-stats::before {
           keepDark.observe(body, { attributes: true, attributeFilter: ['data-ds-dark-theme'] })
           return () => {
             keepDark.disconnect()
-            root.removeAttribute('data-fairy-skin')
+            root.removeAttribute('data-hdd-skin')
             if (!hadDark) body.removeAttribute('data-ds-dark-theme')
           }
-        }, 'fairy-splash: dark H.D.D. skin')
+        }, 'hdd: dark H.D.D. skin')
 
         /*
          * The billing view belongs to the shell, not to us: its own header sits
@@ -2654,9 +2639,9 @@ const billingOpen = () => {
                  back when the page closed — the corner ended up on a third
                  colour. Leave the dark palette alone; the stock page has its own
                  white surface anyway. */
-              root.removeAttribute('data-fairy-skin')
+              root.removeAttribute('data-hdd-skin')
             } else {
-              root.setAttribute('data-fairy-skin', '')
+              root.setAttribute('data-hdd-skin', '')
               if (!body.hasAttribute('data-ds-dark-theme')) body.setAttribute('data-ds-dark-theme', '')
             }
           }
@@ -2670,7 +2655,7 @@ const billingOpen = () => {
             window.cancelAnimationFrame(raf)
             observer.disconnect()
           }
-        }, 'fairy-splash: stock look on the billing page')
+        }, 'hdd: stock look on the billing page')
 
 
 
@@ -2685,7 +2670,7 @@ const billingOpen = () => {
         effect(() => {
           const KNOWN = '[class*="GRgSLq_card"], [class*="RlGAzG_card"], [class*="BynINW_sidebarCol"], [class*="BynINW_frame"], [class*="V4vHZW_root"], [class*="V4vHZW_root"]'
           const LEGACY_CSS = `
-html[data-fairy-skin-legacy] [class*="_sidebarCol"] {
+html[data-hdd-skin-legacy] [class*="_sidebarCol"] {
   background:
     linear-gradient(rgba(92, 128, 255, .034) 1px, transparent 1px),
     linear-gradient(90deg, rgba(92, 128, 255, .034) 1px, transparent 1px),
@@ -2693,20 +2678,20 @@ html[data-fairy-skin-legacy] [class*="_sidebarCol"] {
   background-size: 22px 22px, 22px 22px, auto !important;
   border-right: 1px solid rgba(91, 124, 220, .16) !important;
 }
-html[data-fairy-skin-legacy] [class*="_composerSeat"],
-html[data-fairy-skin-legacy] [class*="_composerStack"] {
+html[data-hdd-skin-legacy] [class*="_composerSeat"],
+html[data-hdd-skin-legacy] [class*="_composerStack"] {
   background: linear-gradient(180deg, #4a4f57 0%, #3b4048 100%) !important;
   box-shadow: none !important;
 }
-html[data-fairy-skin-legacy] [class*="_composerSeat"] [class*="_card"],
-html[data-fairy-skin-legacy] [class*="_composerStack"] [class*="_card"] {
+html[data-hdd-skin-legacy] [class*="_composerSeat"] [class*="_card"],
+html[data-hdd-skin-legacy] [class*="_composerStack"] [class*="_card"] {
   background: linear-gradient(160deg, rgba(57, 120, 237, .44) 0%, rgba(25, 52, 153, .54) 52%, rgba(9, 18, 52, .66) 100%) !important;
   border: 1px solid rgba(110, 150, 245, .22) !important;
   border-top-color: rgba(196, 214, 255, .38) !important;
   border-radius: 20px !important;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .14), 0 18px 44px rgba(0, 0, 0, .46) !important;
 }
-html[data-fairy-skin-legacy] [class*="_scrollBody"] {
+html[data-hdd-skin-legacy] [class*="_scrollBody"] {
   background: transparent !important;
 }
 `
@@ -2722,8 +2707,8 @@ html[data-fairy-skin-legacy] [class*="_scrollBody"] {
             const legacy = document.querySelector(KNOWN) === null
             if (legacy === last) return
             last = legacy
-            if (legacy) document.documentElement.setAttribute('data-fairy-skin-legacy', '')
-            else document.documentElement.removeAttribute('data-fairy-skin-legacy')
+            if (legacy) document.documentElement.setAttribute('data-hdd-skin-legacy', '')
+            else document.documentElement.removeAttribute('data-hdd-skin-legacy')
           }
           const schedule = () => { if (raf === 0) raf = window.requestAnimationFrame(sync) }
           const observer = new MutationObserver(schedule)
@@ -2735,9 +2720,9 @@ html[data-fairy-skin-legacy] [class*="_scrollBody"] {
             window.cancelAnimationFrame(raf)
             observer.disconnect()
             tag.remove()
-            document.documentElement.removeAttribute('data-fairy-skin-legacy')
+            document.documentElement.removeAttribute('data-hdd-skin-legacy')
           }
-        }, 'fairy-splash: legacy-build marker')
+        }, 'hdd: legacy-build marker')
 
         /*
          * Popover clip guard. The composer's "+" menu is absolutely positioned
@@ -2793,10 +2778,10 @@ html[data-fairy-skin-legacy] [class*="_scrollBody"] {
             if (next === last) return
             last = next
             const root = document.documentElement
-            if (menu) root.setAttribute('data-fairy-menu-open', '')
-            else root.removeAttribute('data-fairy-menu-open')
-            if (card) root.setAttribute('data-fairy-card-open', '')
-            else root.removeAttribute('data-fairy-card-open')
+            if (menu) root.setAttribute('data-hdd-menu-open', '')
+            else root.removeAttribute('data-hdd-menu-open')
+            if (card) root.setAttribute('data-hdd-card-open', '')
+            else root.removeAttribute('data-hdd-card-open')
           }
           const schedule = () => { if (raf === 0) raf = window.requestAnimationFrame(sync) }
           const observer = new MutationObserver(schedule)
@@ -2809,10 +2794,10 @@ html[data-fairy-skin-legacy] [class*="_scrollBody"] {
             window.cancelAnimationFrame(raf)
             window.removeEventListener('resize', schedule)
             observer.disconnect()
-            document.documentElement.removeAttribute('data-fairy-menu-open')
-            document.documentElement.removeAttribute('data-fairy-card-open')
+            document.documentElement.removeAttribute('data-hdd-menu-open')
+            document.documentElement.removeAttribute('data-hdd-card-open')
           }
-        }, 'fairy-splash: popover clip guard')
+        }, 'hdd: popover clip guard')
 
         effect(() => {
           /* Mounted lazily: a cold app start can run this effect before the
@@ -3065,7 +3050,7 @@ html[data-fairy-skin-legacy] [class*="_scrollBody"] {
             balanceNode = null
             tokenNode = null
           }
-        }, 'fairy-splash: rail stats')
+        }, 'hdd: rail stats')
 
         effect(() => {
           // One crisp SVG in the shell's brand cell; only its gear and iris
@@ -3091,7 +3076,7 @@ html[data-fairy-skin-legacy] [class*="_scrollBody"] {
             for (const node of document.querySelectorAll('.fs-brand-live')) node.remove()
             for (const mark of skinNodes('2H3hWW', 'brandMark')) mark.classList.remove('has-live-core')
           }
-        }, 'fairy-splash: rotating brand')
+        }, 'hdd: rotating brand')
 
         effect(() => {
           // Align the workspace list's right edge to the New Session button's
@@ -3137,15 +3122,15 @@ html[data-fairy-skin-legacy] [class*="_scrollBody"] {
             buttonObserver?.disconnect()
             for (const list of skinNodes('9lTDKa', 'listArea')) list.style.removeProperty('margin-right')
           }
-        }, 'fairy-splash: align workspace to new session')
+        }, 'hdd: align workspace to new session')
 
         effect(
           () => ctx.slots.inject('shell.overlay', () => ctx.slots.register({
             name: 'shell.overlay',
-            id: 'fairy-splash',
+            id: 'dsh-hdd',
             order: 80,
           }, (props) => h(FairySplash, { ...props, t, locale }))),
-          'fairy-splash: overlay',
+          'hdd: overlay',
         )
 
 
@@ -3174,6 +3159,7 @@ html[data-fairy-skin-legacy] [class*="_scrollBody"] {
     const { useCallback, useEffect, useState } = React
 
     const PKG = 'dsh-hdd'
+    const VERSION = '2.0.0'
     const KEY = 'hdd.state'
     const EVENT = 'hdd:changed'
 
@@ -3190,7 +3176,6 @@ html[data-fairy-skin-legacy] [class*="_scrollBody"] {
       orbHero: true,
       orbChat: true,
       orbHeader: true,
-      band: false,
       capsule: 'blue',
       rev: 1,
     }
@@ -3200,7 +3185,7 @@ html[data-fairy-skin-legacy] [class*="_scrollBody"] {
       ? {
           nav: 'HDD',
           title: '对话区背景',
-          intro: '背景图、遮罩、三颗全息核心、输入区外框。改动立即生效，不用重启。',
+          intro: '背景图、遮罩、三颗全息核心、输入框外观。改动立即生效，不用重启。',
           source: '背景来源',
           sDefault: '跟随皮肤',
           sFile: '本地文件',
@@ -3218,8 +3203,6 @@ html[data-fairy-skin-legacy] [class*="_scrollBody"] {
           orbChat: '对话区（顶部小眼睛）',
           orbHeader: '标题栏',
           composer: '输入区',
-          band: '灰底外框',
-          bandHint: '输入框外面那圈灰底与圆角外框。关掉后只剩输入卡，四周留白保留。',
           capsule: '输入框背景',
           capsuleBlue: '蓝色亚克力',
           capsuleWhite: '白色亚克力',
@@ -3239,7 +3222,7 @@ html[data-fairy-skin-legacy] [class*="_scrollBody"] {
       : {
           nav: 'HDD',
           title: 'Conversation backdrop',
-          intro: 'Backdrop, scrim, the three holographic cores and the composer band. Changes apply immediately.',
+          intro: 'Backdrop, scrim, the three holographic cores and the composer capsule. Changes apply immediately.',
           source: 'Backdrop source',
           sDefault: 'Follow skin',
           sFile: 'Local file',
@@ -3257,8 +3240,6 @@ html[data-fairy-skin-legacy] [class*="_scrollBody"] {
           orbChat: 'Conversation area (top eye)',
           orbHeader: 'Title bar',
           composer: 'Composer',
-          band: 'Grey band',
-          bandHint: 'The grey slab and rounded frame around the input capsule. Off leaves the capsule floating, gaps kept.',
           capsule: 'Input background',
           capsuleBlue: 'Blue acrylic',
           capsuleWhite: 'White acrylic',
@@ -3276,11 +3257,16 @@ html[data-fairy-skin-legacy] [class*="_scrollBody"] {
           badUrl: 'URL must start with http:// or https://',
         }
 
-    /* 输入区：灰底带圆角与间隔（原 dsh-fairy-composer 的全部内容）。
-       外框可以关：关掉只把灰底去掉，四周留白保留，输入卡直接浮在背景上。
-       两条覆盖规则带 data-fairy-skin + data-hdd-band 双属性，特异度高于皮肤
-       自己的 `.an3WzG_composerSeat` / `[class*="_composerSeat"]` 规则，不靠
-       注入顺序取胜。 */
+        /*
+     * 输入区：座位只负责内边距与圆角，永不刷底。
+     *
+     * 座位是宿主自己的 [data-composer-seat]（稳定属性，不随构建哈希变），旧构建
+     * 只有类名，所以两条都写。宿主给座位画一条 --dsw-alias-bg-base 的纵向渐变
+     * （0px 透明 → 36px 实色），座位又被 margin-top:auto 撑到柱底，于是滚到底就
+     * 露出一整块深色。清它必须清整个 background 简写，只清 background-color 会
+     * 把那条渐变留下。
+     */
+
     const COMPOSER_CSS = `
 :root {
   --dsh-composer-gap-x: 12px;
@@ -3309,34 +3295,32 @@ html[data-fairy-skin-legacy] [class*="_scrollBody"] {
   border-radius: var(--dsh-composer-frame-radius);
 }
 
-html[data-fairy-skin][data-hdd-band="on"] :is([data-composer-seat], [class*="_composerSeat"]) {
-  background: var(--dsw-alias-bg-base);
-}
-
-html[data-fairy-skin][data-hdd-band="off"] :is(
-  [data-composer-seat],
-  [class*="_composerSeat"],
-  [class*="_composerStack"]
-) {
+/*
+ * The seat itself never paints.
+ *
+ * The host draws a background-image gradient on the seat — transparent at 0px,
+ * solid --dsw-alias-bg-base from 36px on — and pins the seat to the foot of the
+ * column with margin-top:auto. When the conversation is scrolled to the bottom
+ * that combination is exactly the dark block that used to appear around the
+ * input card, and clearing only background-color left the gradient in place.
+ * The shorthand clears both; nothing in this plugin puts either back.
+ */
+[data-composer-seat],
+[class*="_composerSeat"],
+[class*="_composerStack"] {
   background: none !important;
   box-shadow: none !important;
 }
 
-/*
- * 兜底：万一还有哪层祖先刷了底色（类名不公开始终可能漏），把颜色一并清掉。
- * 只清 background-color，不动 background-image——艺术图挂在更上层的 root 上。
- */
-html[data-fairy-skin][data-hdd-band="off"] :is(.V4vHZW_root, [data-slot="main.conversation"]) *:has([data-composer-seat]),
-html[data-fairy-skin][data-hdd-band="off"] :is(.V4vHZW_root, [data-slot="main.conversation"]) *:has([class*="_composerSeat"]) {
-  background-color: transparent !important;
-}
+
+
 
 /*
  * 白色亚克力输入卡。两块要一起换：底色换成半透明白，文字必须反成深色，
  * 否则白底浅字看不见。磨砂靠 backdrop-filter，作用面只有这一颗胶囊，
  * 不像皮肤当初禁用整层模糊那样吃性能。
  */
-html[data-fairy-skin][data-hdd-capsule="white"] :is(.GRgSLq_card, .RlGAzG_card) {
+html[data-hdd-skin][data-hdd-capsule="white"] :is(.GRgSLq_card, .RlGAzG_card) {
   background: linear-gradient(180deg, rgba(255, 255, 255, .90) 0%, rgba(243, 247, 255, .84) 100%) !important;
   border: 1px solid rgba(255, 255, 255, .74) !important;
   border-top-color: rgba(255, 255, 255, .96) !important;
@@ -3349,19 +3333,19 @@ html[data-fairy-skin][data-hdd-capsule="white"] :is(.GRgSLq_card, .RlGAzG_card) 
   color: #16233d !important;
   text-shadow: none !important;
 }
-html[data-fairy-skin][data-hdd-capsule="white"] :is(.GRgSLq_card, .RlGAzG_card) :is(textarea, input) {
+html[data-hdd-skin][data-hdd-capsule="white"] :is(.GRgSLq_card, .RlGAzG_card) :is(textarea, input) {
   color: #16233d !important;
   caret-color: #2456c4 !important;
   text-shadow: none !important;
 }
-html[data-fairy-skin][data-hdd-capsule="white"] :is(.GRgSLq_card, .RlGAzG_card) :is(textarea, input)::placeholder {
+html[data-hdd-skin][data-hdd-capsule="white"] :is(.GRgSLq_card, .RlGAzG_card) :is(textarea, input)::placeholder {
   color: rgba(22, 35, 61, .44) !important;
 }
-html[data-fairy-skin][data-hdd-capsule="white"] :is(.GRgSLq_card, .RlGAzG_card) :is(button, span, small) {
+html[data-hdd-skin][data-hdd-capsule="white"] :is(.GRgSLq_card, .RlGAzG_card) :is(button, span, small) {
   color: #24395f !important;
   text-shadow: none !important;
 }
-html[data-fairy-skin][data-hdd-capsule="white"] :is(.GRgSLq_card, .RlGAzG_card) svg {
+html[data-hdd-skin][data-hdd-capsule="white"] :is(.GRgSLq_card, .RlGAzG_card) svg {
   color: #24395f !important;
 }
 
@@ -3370,22 +3354,22 @@ html[data-fairy-skin][data-hdd-capsule="white"] :is(.GRgSLq_card, .RlGAzG_card) 
  * "+" 与发送按钮、计数条），白底之后就成了白字白底。这批选择器比上面的卡级
  * 规则更具体，所以逐条点名，不做全局通配。
  */
-html[data-fairy-skin][data-hdd-capsule="white"] :is(.GRgSLq_input, .RlGAzG_input) {
+html[data-hdd-skin][data-hdd-capsule="white"] :is(.GRgSLq_input, .RlGAzG_input) {
   color: #1a2743 !important;
   caret-color: #2456c4 !important;
   text-shadow: none !important;
 }
-html[data-fairy-skin][data-hdd-capsule="white"] :is(.GRgSLq_placeholder, .RlGAzG_placeholder) {
+html[data-hdd-skin][data-hdd-capsule="white"] :is(.GRgSLq_placeholder, .RlGAzG_placeholder) {
   color: rgba(26, 39, 67, .46) !important;
 }
-html[data-fairy-skin][data-hdd-capsule="white"] :is(.GRgSLq_add, .GRgSLq_primary, .RlGAzG_add) {
+html[data-hdd-skin][data-hdd-capsule="white"] :is(.GRgSLq_add, .GRgSLq_primary, .RlGAzG_add) {
   color: #22304d !important;
 }
-html[data-fairy-skin][data-hdd-capsule="white"] ._2WTFBq_bar {
+html[data-hdd-skin][data-hdd-capsule="white"] ._2WTFBq_bar {
   background: rgba(34, 48, 77, .08) !important;
   color: #3a4a6d !important;
 }
-html[data-fairy-skin][data-hdd-capsule="white"] ._2WTFBq_bar :is(span, div, p) {
+html[data-hdd-skin][data-hdd-capsule="white"] ._2WTFBq_bar :is(span, div, p) {
   color: #3a4a6d !important;
 }
 /*
@@ -3393,12 +3377,12 @@ html[data-fairy-skin][data-hdd-capsule="white"] ._2WTFBq_bar :is(span, div, p) {
  * 尺寸与投影 —— 把胶囊从「撑满整行」收成一颗居中卡片，和白色那版同宽同高，
  * 切换时布局不跳。投影取中性值：滚到底时压在浅色内容上也不会糊成一块黑。
  */
-html[data-fairy-skin][data-hdd-capsule="blue"] .an3WzG_composerSeat,
-html[data-fairy-skin][data-hdd-capsule="blue"] [class*="_composerSeat"] {
+html[data-hdd-skin][data-hdd-capsule="blue"] .an3WzG_composerSeat,
+html[data-hdd-skin][data-hdd-capsule="blue"] [class*="_composerSeat"] {
   padding-left: 12px !important;
   padding-right: 12px !important;
 }
-html[data-fairy-skin][data-hdd-capsule="blue"] :is(.GRgSLq_card, .RlGAzG_card) {
+html[data-hdd-skin][data-hdd-capsule="blue"] :is(.GRgSLq_card, .RlGAzG_card) {
   width: min(100%, var(--hdd-capsule-max, 760px)) !important;
   margin-left: auto !important;
   margin-right: auto !important;
@@ -3428,7 +3412,6 @@ html[data-fairy-skin][data-hdd-capsule="blue"] :is(.GRgSLq_card, .RlGAzG_card) {
           orbHero: parsed.orbHero !== false,
           orbChat: parsed.orbChat !== false,
           orbHeader: parsed.orbHeader !== false,
-          band: parsed.band === true,
           capsule: parsed.capsule === 'white' ? 'white' : ('blue' === parsed.capsule ? 'blue' : (parsed.acrylic === true ? 'white' : 'blue')),
           rev: Number.isFinite(parsed.rev) ? parsed.rev : 1,
         }
@@ -3466,32 +3449,37 @@ html[data-fairy-skin][data-hdd-capsule="blue"] :is(.GRgSLq_card, .RlGAzG_card) {
         .join(', ')})`
     }
 
+    /* 「跟随皮肤」时用的就是随包的那张图。 */
+    const DEFAULT_ART = 'url("/hdd/v1/chat-bg.jpg")'
+
+    /*
+     * 背景画在对话栏本身：它是布局格子而不是滚动容器，盒子已经到窗口底边，
+     * 所以图不会被列表裁掉。两个 slot 包装层都是 display:contents、没有盒子，
+     * 真正有盒子的是它下面那个带 data-phase 的元素。
+     * 「背景固定」关掉时改挂到对话内容上，图就随消息一起滚。
+     */
     function buildCss(state) {
-      const rules = []
       const art = artValue(state)
       const factor = state.scrim
+      const anchor = state.fixedBg
+        ? '[data-slot="main.conversation"] > [data-phase]'
+        : '[data-conversation-content]'
+      const canvas = `html[data-hdd-skin][data-hdd] ${anchor}`
+      /* 「关闭背景」只留遮罩，画布就是一块深色底。 */
+      const picture = art === 'none' ? '' : `, ${art === null ? DEFAULT_ART : art}`
 
-      if (art !== null) {
-        rules.push(`:root[data-fairy-skin][data-hdd] { --fairy-chat-art: ${art} !important; }`)
-      }
-
-      const attach = state.fixedBg ? 'fixed' : 'scroll'
-      const target = ':is(.V4vHZW_root, [data-slot="main.conversation"])'
-      rules.push(
-        `html[data-fairy-skin][data-hdd] body:has(.V4vHZW_root) ${target} {`
-        + ` background-image: ${scrimGradient(SCRIM, factor)}, var(--fairy-chat-art) !important;`
+      const rules = [
+        `${canvas} {`
+        + ` background-image: ${scrimGradient(SCRIM, factor)}${picture} !important;`
         + ' background-size: cover !important;'
         + ' background-position: 50% 14% !important;'
         + ' background-repeat: no-repeat !important;'
-        + ` background-attachment: ${attach} !important;`
-        + ' background-color: #05070e !important; }',
-      )
-      rules.push(
-        `html[data-fairy-skin][data-hdd] body:has(.V4vHZW_root[data-phase="hero"]) ${target} {`
-        + ` background-image: ${scrimGradient(SCRIM_HERO, factor)}, var(--fairy-chat-art) !important;`
-        + ' background-position: 50% 22% !important;'
-        + ` background-attachment: ${attach} !important; }`,
-      )
+        + ' background-color: #04060d !important; }',
+        /* 新会话页把脸摆得更靠中间，遮罩略重、构图下移，和卡片让位。 */
+        `${canvas}[data-phase="hero"] {`
+        + ` background-image: ${scrimGradient(SCRIM_HERO, factor)}${picture} !important;`
+        + ' background-position: 50% 22% !important; }',
+      ]
 
       const parts = []
       if (!state.orbHero) parts.push('.fs-hero-orb', '.fs-halo', '.fs-orb-glow')
@@ -3508,12 +3496,12 @@ html[data-fairy-skin][data-hdd-capsule="blue"] :is(.GRgSLq_card, .RlGAzG_card) {
     function syncRoot(state) {
       const root = document.documentElement
       root.setAttribute('data-hdd', '')
+      root.setAttribute('data-hdd-version', VERSION)
       const hidden = []
       if (!state.orbHero) hidden.push('hero')
       if (!state.orbChat) hidden.push('chat')
       if (!state.orbHeader) hidden.push('header')
       root.setAttribute('data-hdd-orb', hidden.join(' '))
-      root.setAttribute('data-hdd-band', state.band ? 'on' : 'off')
       root.setAttribute('data-hdd-capsule', state.capsule === 'white' ? 'white' : 'blue')
     }
 
@@ -3771,7 +3759,6 @@ html[data-fairy-skin][data-hdd-capsule="blue"] :is(.GRgSLq_card, .RlGAzG_card) {
         h('div', { style: { ...rowStyle, borderBottom: 'none', paddingBottom: '0' } },
           h('div', { style: { flex: '1 1 auto' } }, h('div', { style: labelStyle }, L.composer)),
         ),
-        toggleRow(L.band, L.bandHint, 'band'),
 
         h('div', { style: rowStyle },
           h('div', { style: { flex: '1 1 auto' } },
@@ -3894,6 +3881,45 @@ html[data-fairy-skin][data-hdd-capsule="blue"] :is(.GRgSLq_card, .RlGAzG_card) {
             }
           })(),
           seatFound: seat !== null,
+          /* 画布、body、主栏的计算样式：图到底挂在哪、body 有没有挡一层。 */
+          canvas: probeStyle(document.documentElement),
+          body: document.body === null ? null : probeStyle(document.body),
+          main: (() => {
+            const node = document.querySelector('[data-slot="main"]')
+            return node === null ? null : probeStyle(node)
+          })(),
+          /* 背景真正的承载元素：有盒子的那个 data-phase，图在不在它身上一眼能看出来。 */
+          backdrop: (() => {
+            const node = document.querySelector('[data-slot="main.conversation"] > [data-phase]')
+            return node === null ? null : probeStyle(node)
+          })(),
+          /* 滚到底时，窗口最底部那几点上究竟压着谁：探针跑在加载后 2.5 s，
+             那时页面通常还在顶部，所以先自己滚到底再量，量完还原。 */
+          foot: (() => {
+            const scroller = document.querySelector('[data-conversation-scroll]')
+            const saved = scroller === null ? 0 : scroller.scrollTop
+            try {
+              if (scroller !== null) scroller.scrollTop = scroller.scrollHeight
+              const y = window.innerHeight - 3
+              const left = Math.max(0, box === null ? 0 : box.left)
+              const span = Math.max(1, window.innerWidth - left)
+              return {
+                scrollerFound: scroller !== null,
+                scrollTop: scroller === null ? null : Math.round(scroller.scrollTop),
+                scrollHeight: scroller === null ? null : Math.round(scroller.scrollHeight),
+                clientHeight: scroller === null ? null : Math.round(scroller.clientHeight),
+                seatBottom: box === null ? null : Math.round(box.bottom),
+                footY: y,
+                atBottomLeft: probeAt(left + 8, y),
+                atBottomQuarter: probeAt(left + span * 0.25, y),
+                atBottomMid: probeAt(left + span * 0.5, y),
+                atBottomThreeQuarter: probeAt(left + span * 0.75, y),
+                atBottomRight: probeAt(window.innerWidth - 8, y),
+              }
+            } finally {
+              if (scroller !== null) scroller.scrollTop = saved
+            }
+          })(),
           card: card === null ? null : probeStyle(card),
           stack: stack === null ? null : probeStyle(stack),
           chain,
@@ -3959,7 +3985,6 @@ html[data-fairy-skin][data-hdd-capsule="blue"] :is(.GRgSLq_card, .RlGAzG_card) {
             const root = document.documentElement
             root.removeAttribute('data-hdd')
             root.removeAttribute('data-hdd-orb')
-            root.removeAttribute('data-hdd-band')
             root.removeAttribute('data-hdd-capsule')
           }
         }, 'hdd: backdrop, scrim and core visibility')
